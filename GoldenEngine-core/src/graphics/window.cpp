@@ -45,6 +45,7 @@ namespace golden
 			}
 
 			m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
+
 			if (!m_Window)
 			{
 				glfwTerminate();
