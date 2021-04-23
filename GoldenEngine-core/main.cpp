@@ -9,9 +9,6 @@
 
 int main()
 {
-	//TODO : WORK WITH COLOR BUFFERS THEY DOES NOT WORK,
-	//I THINK THAT IT IS RELATED DO UNBINDED BUFFER
-
 	using namespace golden;
 	using namespace graphics;
 	using namespace maths;
@@ -69,8 +66,8 @@ int main()
 	VertexArray vao, vao2;
 	IndexBuffer ibo(indicies, 6);
 
-	vao.addBuffers(new Buffer(verticies, 4 * 3, 3), 0);
-	vao.addBuffers(new Buffer(colors1, 4 * 4, 4), 1);
+	vao.addBuffers(new Buffer(verticies, 4 * 3, 3), 0); //3 bc of vec3
+	vao.addBuffers(new Buffer(colors1, 4 * 4, 4), 1); //4 bc of vec4
 
 	vao2.addBuffers(new Buffer(verticies, 4 * 3, 3), 0);
 	vao2.addBuffers(new Buffer(colors2, 4 * 4, 4), 1);
@@ -100,7 +97,6 @@ int main()
 		vao.bind();
 		ibo.bind();
 		shader.setUniformMat4("ml_matrix", Mat4::translation(Vec3(4, 3, 0)));
-		//shader.setUniform4f("colour", Vec4(0.5f, 0.8f, 0, 1));
 		glDrawElements(GL_TRIANGLES, ibo.getCount(), GL_UNSIGNED_SHORT, 0);
 		vao.unbind();
 		ibo.unbind();
@@ -108,7 +104,6 @@ int main()
 		vao2.bind();
 		ibo.bind();
 		shader.setUniformMat4("ml_matrix", Mat4::translation(Vec3(0, 0, 0)));
-		//shader.setUniform4f("colour", Vec4(0.2f, 0.3f, 0.8f, 1));
 		glDrawElements(GL_TRIANGLES, ibo.getCount(), GL_UNSIGNED_SHORT, 0);
 		vao2.unbind();
 		ibo.unbind();
