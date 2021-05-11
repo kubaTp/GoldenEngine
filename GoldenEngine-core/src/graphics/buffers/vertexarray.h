@@ -17,7 +17,7 @@ namespace golden { namespace graphics {
 		VertexArray();
 		~VertexArray();
 
-		void addBuffers(Buffer* buffer, GLuint index);
+		void addBuffer(Buffer* buffer, GLuint index);
 
 		void bind() const;
 		void unbind() const;

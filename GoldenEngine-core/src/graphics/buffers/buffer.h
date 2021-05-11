@@ -13,6 +13,7 @@ namespace golden { namespace graphics {
 
 	public:
 		Buffer(GLfloat* data, GLsizei count,  GLuint compoenentCount);
+		~Buffer();
 
 		void bind() const;
 		void unbind() const;

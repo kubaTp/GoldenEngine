@@ -1,24 +1,20 @@
 #include "window.h"
 
-namespace golden
-{
-	namespace graphics
-	{
+namespace golden { namespace graphics {
 
 		void window_resize(GLFWwindow* window, int width, int height);
 		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 		void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+		void error_callback(int error, const char* description);
 
 		Window::Window(const char* title, int width, int height)
 		{
 			m_Title = title;
 			m_Width = width;
 			m_Height = height;
-			if (!init())
-			{
-				glfwTerminate();
-			}
+
+			init();
 
 			for (int i = 0; i < MAX_KEYS; i++)
 			{
@@ -38,6 +34,8 @@ namespace golden
 
 		bool Window::init()
 		{
+			glfwSetErrorCallback(error_callback);
+
 			if (!glfwInit())
 			{
 				std::cout << "FAILED TO INITIALIZED GLFW!" << std::endl;
@@ -136,5 +134,9 @@ namespace golden
 			win->mx = xpos;
 			win->my = ypos;
 		}
-	}
-}
+
+		void error_callback(int error, const char* description)
+		{
+			std::cout << "Error: " << description << std::endl;
+		}
+}}
