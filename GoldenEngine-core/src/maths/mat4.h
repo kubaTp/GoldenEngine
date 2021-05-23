@@ -31,8 +31,14 @@ namespace golden
 			}
 
 			Mat4& multiply(const Mat4& other);
-		    friend Mat4 operator*(Mat4 left, const Mat4& right); 
+		    friend Mat4 operator*(Mat4 left, const Mat4& right);
 			Mat4& operator*=(const Mat4& other);
+
+			Vec3 multiply(const Vec3& other) const;
+			friend Vec3 operator*(const Mat4& left, const Vec3& right);
+
+			Vec4 multiply(const Vec4& other) const;
+			friend Vec4 operator*(const Mat4& left, const Vec4& right);
 
 			static Mat4 orthographic(float left, float right, float bottom, float top, float near, float far);
 			static Mat4 perspective(float fov, float aspectRatio, float near, float far);

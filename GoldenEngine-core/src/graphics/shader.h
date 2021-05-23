@@ -32,6 +32,6 @@ namespace golden { namespace graphics {
 
 	private:
 		GLuint load();
-		GLint getUniformLocation(const GLchar* name);
+		GLuint getUniformLocation(const GLchar* name);
 	};
 }}

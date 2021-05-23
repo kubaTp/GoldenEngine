@@ -113,7 +113,7 @@ namespace golden {
 			glUseProgram(0);
 		}
 
-		GLint Shader::getUniformLocation(const GLchar* name)
+		GLuint Shader::getUniformLocation(const GLchar* name)
 		{
 			return glGetUniformLocation(m_ShaderID, name);
 		}

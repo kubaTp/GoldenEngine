@@ -11,6 +11,7 @@ namespace golden { namespace graphics {
 		GLuint m_Count; //count of indicies
 
 	public:
+		IndexBuffer(GLuint* data, GLsizei count);
 		IndexBuffer(GLushort* data, GLsizei count);
 		~IndexBuffer();
 

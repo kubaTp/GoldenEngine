@@ -1,11 +1,15 @@
 #pragma once
 
+#include <cstddef>
+
 #include "renderer2D.h"
 #include "buffers/indexbuffer.h"
 
+#include "renderable2D.h"
+
 namespace golden { namespace graphics {
 
-#define RENDERER_MAX_SPRITES	10000 //limit of renderer sprites
+#define RENDERER_MAX_SPRITES	60000 //limit of renderer sprites
 #define RENDERER_VERTEX_SIZE	sizeof(VertexData) //it grows with members of POD called VertexData
 #define RENDERER_SPRITE_SIZE	RENDERER_VERTEX_SIZE * 4 //size of vertex times 4 bc of rectangles and squares
 #define RENDERER_BUFFER_SIZE	RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES //size of buffer given to GPU
@@ -28,10 +32,10 @@ namespace golden { namespace graphics {
 		BatchRenderer2D();
 		~BatchRenderer2D();
 
-		void begin(); // bind buffer
+		void begin() override; // bind buffer
 		void submit(const Renderable2D* renderable) override; // submit data to buffer
-		void end();
 		void flush() override;
+		void end() override;
 
 	private:
 		void init();
