@@ -15,7 +15,11 @@ namespace golden { namespace graphics {
 		const maths::Mat4* m_TransformationStackBack;
 
 	protected:
-		Renderer2D() { m_TransformationStack.push_back(maths::Mat4::idenity()); m_TransformationStackBack = &m_TransformationStack.back(); }
+		Renderer2D()
+		{
+			m_TransformationStack.push_back(maths::Mat4::idenity()); 
+			m_TransformationStackBack = &m_TransformationStack.back(); 
+		}
 		 
 	public:
 		void push(const maths::Mat4& matrix, bool override = false)

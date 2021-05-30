@@ -3,7 +3,6 @@
 #include "Windows.h"
 
 namespace golden {
-
 	class Timer
 	{
 	private:
@@ -29,4 +28,5 @@ namespace golden {
 			return (float)(cycles * m_Frequency);
 		}
 	};
+
 }

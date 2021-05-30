@@ -12,7 +12,7 @@ namespace golden { namespace graphics {
 		delete m_IBO;
 
 		glDeleteBuffers(1, &m_VBO);
-		//glDeleteVertexArrays(1, &m_VAO);
+		glDeleteVertexArrays(1, &m_VAO);
 	}
 
 	void BatchRenderer2D::init()
@@ -27,9 +27,11 @@ namespace golden { namespace graphics {
 		glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
 
 		glEnableVertexAttribArray(SHADER_VERTEX_INDEX);
+		glEnableVertexAttribArray(SHADER_UV_INDEX);
 		glEnableVertexAttribArray(SHADER_COLOR_INDEX);
-
+		
 		glVertexAttribPointer(SHADER_VERTEX_INDEX, 3, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*) 0); // 3 bc of 3 floats per vertex and it takes the same size as vertex and the first byte is 0
+		glVertexAttribPointer(SHADER_UV_INDEX, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)offsetof(VertexData, VertexData::uv));
 		glVertexAttribPointer(SHADER_COLOR_INDEX, 4, GL_UNSIGNED_BYTE, GL_TRUE, RENDERER_VERTEX_SIZE, (const GLvoid*) offsetof(VertexData, VertexData::color)); //3 * 4 = 12, it is the first bit of color
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -67,6 +69,7 @@ namespace golden { namespace graphics {
 		const maths::Vec2& size = renderable->getSize();
 		const maths::Vec3& position = renderable->getPosition();
 		const maths::Vec4& color = renderable->getColor();
+		const std::vector<maths::Vec2>& uv = renderable->getUV();
 
 		/*submit verticies -> look at verticies in staticsprite.cpp*/
 
@@ -81,24 +84,29 @@ namespace golden { namespace graphics {
 
 		//0, 0
 		m_Buffer->vertex = *m_TransformationStackBack * position;
+		m_Buffer->uv = uv[0];
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//0, 5
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x, position.y + size.y, 0);
+		m_Buffer->uv = uv[1];
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//5, 5
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x + size.x, position.y + size.y, 0);
+		m_Buffer->uv = uv[2];
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//5, 0
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x + size.x, position.y, 0);
+		m_Buffer->uv = uv[3];
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
+		//add new 6 verticies
 		m_IndexCount += 6;
 	}
 	
@@ -113,11 +121,13 @@ namespace golden { namespace graphics {
 		glBindVertexArray(m_VAO);
 		m_IBO->bind();
 
+		//draw amount of verticies given in m_IndexCount variable 
 		glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, NULL);
 
 		glBindVertexArray(0);
 		m_IBO->unbind();
 
+		//make m_IndexCount 0 for next draw call
 		m_IndexCount = 0;
 	}
 }}

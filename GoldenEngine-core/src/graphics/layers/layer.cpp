@@ -4,6 +4,7 @@ namespace golden { namespace graphics {
 
 	Layer::Layer(Renderer2D* renderer, Shader& shader, maths::Mat4 projectionMatrix) : m_Renderer(renderer), m_Shader(shader), m_ProjectionMatrix(projectionMatrix)
 	{
+		//set specified matrix to projection matrix in specified shader
 		m_Shader.enable();
 		m_Shader.setUniformMat4("pr_matrix", m_ProjectionMatrix);
 		m_Shader.disabled();
@@ -34,5 +35,14 @@ namespace golden { namespace graphics {
 
 		m_Renderer->end();
 		m_Renderer->flush();
+	}
+
+	void Layer::changePrMatrix(maths::Mat4 projectionMatrix)
+	{
+		m_ProjectionMatrix = projectionMatrix;
+
+		m_Shader.enable();
+		m_Shader.setUniformMat4("pr_matrix", m_ProjectionMatrix);
+		m_Shader.disabled();
 	}
 }}

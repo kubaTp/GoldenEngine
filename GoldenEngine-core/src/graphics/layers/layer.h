@@ -19,7 +19,8 @@ namespace golden { namespace graphics {
 	public:
 		virtual ~Layer();
 
-		void add(Renderable2D* renderable);
-		void render();
+		void add(Renderable2D* renderable); // add Renderable2D to the m_RenderablesQueue
+		void render(); // bind shader and renderer, submit sprites to renderer, draw them by renderer
+		void changePrMatrix(maths::Mat4 projectionMatrix); // change projection matrix after contructing variable
 	};
 }}

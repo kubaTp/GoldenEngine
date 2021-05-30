@@ -16,7 +16,8 @@ namespace golden { namespace graphics {
 #define RENDERER_INDICIES_SIZE	RENDERER_MAX_SPRITES * 6
 
 #define SHADER_VERTEX_INDEX 0
-#define SHADER_COLOR_INDEX 1
+#define SHADER_UV_INDEX 1
+#define SHADER_COLOR_INDEX 2
 
 	class BatchRenderer2D : public Renderer2D
 	{
@@ -32,12 +33,12 @@ namespace golden { namespace graphics {
 		BatchRenderer2D();
 		~BatchRenderer2D();
 
-		void begin() override; // bind buffer
+		void begin() override; // bind buffers
 		void submit(const Renderable2D* renderable) override; // submit data to buffer
-		void flush() override;
-		void end() override;
+		void flush() override; // draw elements
+		void end() override; // unbind buffers
 
 	private:
-		void init();
+		void init(); // big function called in conctructor
 	};
 }}

@@ -8,6 +8,7 @@ namespace golden { namespace graphics {
 	{
 	private:
 	public:
+		Sprite() {}
 		Sprite(float x, float y, float width, float heigh, const maths::Vec4& color);
 		//~Sprite();
 	};
