@@ -24,7 +24,7 @@ namespace golden { namespace graphics {
 
 		inline const GLsizei getWidth() const { return m_Width; }
 		inline const GLsizei getHeight() const { return m_Height; }
-
+		inline const GLuint getTextureID() const { return m_TextureID; }
 	private:
 		GLuint load();
 	};

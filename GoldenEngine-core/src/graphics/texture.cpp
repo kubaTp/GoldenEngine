@@ -21,8 +21,9 @@ namespace golden { namespace graphics {
 		glBindTexture(GL_TEXTURE_2D, result);
 
 		//setting parameters of opengl texture
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // "crispEdges"
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // when minimized setting nearest not linear, "crisp edges" effect
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // when maximized
+
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_BGR, GL_UNSIGNED_BYTE, pixels);
 
 		glBindTexture(GL_TEXTURE_2D, 0);

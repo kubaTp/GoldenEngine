@@ -21,7 +21,7 @@ namespace golden { namespace graphics {
 		/*VBO - bind general buffer*/
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
-		glBindVertexArray(m_VAO);//necessary to bind all attrib pointers to VAO
+		glBindVertexArray(m_VAO); // necessary to bind all attrib pointers to VAO
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 		glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
@@ -29,10 +29,12 @@ namespace golden { namespace graphics {
 		glEnableVertexAttribArray(SHADER_VERTEX_INDEX);
 		glEnableVertexAttribArray(SHADER_UV_INDEX);
 		glEnableVertexAttribArray(SHADER_COLOR_INDEX);
-		
+		glEnableVertexAttribArray(SHADER_TID_INDEX);
+
 		glVertexAttribPointer(SHADER_VERTEX_INDEX, 3, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*) 0); // 3 bc of 3 floats per vertex and it takes the same size as vertex and the first byte is 0
-		glVertexAttribPointer(SHADER_UV_INDEX, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)offsetof(VertexData, VertexData::uv));
-		glVertexAttribPointer(SHADER_COLOR_INDEX, 4, GL_UNSIGNED_BYTE, GL_TRUE, RENDERER_VERTEX_SIZE, (const GLvoid*) offsetof(VertexData, VertexData::color)); //3 * 4 = 12, it is the first bit of color
+		glVertexAttribPointer(SHADER_UV_INDEX, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)offsetof(VertexData, VertexData::uv)); // offset to the specified member
+		glVertexAttribPointer(SHADER_TID_INDEX, 1, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)offsetof(VertexData, VertexData::tid));
+		glVertexAttribPointer(SHADER_COLOR_INDEX, 4, GL_UNSIGNED_BYTE, GL_TRUE, RENDERER_VERTEX_SIZE, (const GLvoid*) offsetof(VertexData, VertexData::color));
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -70,39 +72,78 @@ namespace golden { namespace graphics {
 		const maths::Vec3& position = renderable->getPosition();
 		const maths::Vec4& color = renderable->getColor();
 		const std::vector<maths::Vec2>& uv = renderable->getUV();
+		const GLuint tid = renderable->getTID();
+		 
+		unsigned int c = 0;
 
-		/*submit verticies -> look at verticies in staticsprite.cpp*/
+		// submit verticies -> look at verticies in staticsprite.cpp
 
-		//color is from 0 to 1 in float
-		unsigned char r = color.x * 255.0f;
-		unsigned char g = color.y* 255.0f;
-		unsigned char b = color.z * 255.0f;
-		unsigned char a = color.w * 255.0f;
+		float textureSlot = 0.0f; // textureSlot, sampler should be float, 0 means no texture, 1 means 0 active texture
 
-		unsigned int c = a << 24 | b << 16 | g << 8 | r; //push alfa to the first bytes
+		if (tid > 0) // if texture id is greater than 1 that means that texture exists
+		{
+			bool found = false;
+
+			for (int i = 0; i < m_TextureSlots.size(); i++)
+			{
+				if (m_TextureSlots[i] == tid)
+				{
+					textureSlot = (float)(i + 1); // grab index to set-up sampler becasue sampler2d works just chronologic, for example tid 6 can be equal to sampler 2 or 3... || (i + 1) because of 0 means no texture and 1 means 0 active texture
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				if (m_TextureSlots.size() >= 32) // if texture slots are too big
+				{
+					end();
+					flush();
+					begin();
+				}
+
+				m_TextureSlots.push_back(tid); // if not push back this tid
+				textureSlot = (float) (m_TextureSlots.size()); // set textureSlot to the last one in m_TextureSlots
+			}
+		}
+		else
+		{
+			// color is from 0 to 1 in float
+			unsigned char r = color.x * 255.0f;
+			unsigned char g = color.y * 255.0f;
+			unsigned char b = color.z * 255.0f;
+			unsigned char a = color.w * 255.0f;
+
+			c = a << 24 | b << 16 | g << 8 | r; // push alfa to the first bytes
+		}
 
 
 		//0, 0
 		m_Buffer->vertex = *m_TransformationStackBack * position;
 		m_Buffer->uv = uv[0];
+		m_Buffer->tid = textureSlot;
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//0, 5
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x, position.y + size.y, 0);
 		m_Buffer->uv = uv[1];
+		m_Buffer->tid = textureSlot;
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//5, 5
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x + size.x, position.y + size.y, 0);
 		m_Buffer->uv = uv[2];
+		m_Buffer->tid = textureSlot;
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
 		//5, 0
 		m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(position.x + size.x, position.y, 0);
 		m_Buffer->uv = uv[3];
+		m_Buffer->tid = textureSlot;
 		m_Buffer->color = c;
 		m_Buffer++; // advance buffer to the next VertexData
 
@@ -118,6 +159,12 @@ namespace golden { namespace graphics {
 
 	void BatchRenderer2D::flush()
 	{
+		for (int i = 0; i < m_TextureSlots.size(); i++) // bind every texture in m_TextureSlots
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, m_TextureSlots[i]);
+		}
+
 		glBindVertexArray(m_VAO);
 		m_IBO->bind();
 

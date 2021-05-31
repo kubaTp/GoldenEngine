@@ -8,10 +8,10 @@ namespace golden { namespace graphics {
 	class Layer
 	{
 	protected:
-		Renderer2D* m_Renderer;
-		std::vector<Renderable2D*> m_RenderablesQueue;
-		Shader& m_Shader;
-		maths::Mat4 m_ProjectionMatrix;
+		Renderer2D* m_Renderer; // everone layer has own renderer
+		std::vector<Renderable2D*> m_RenderablesQueue; // queue of renderables to be rendered
+		Shader& m_Shader; // unique shader
+		maths::Mat4 m_ProjectionMatrix; // unique projection matrix of layer
 
 	public:
 		Layer(Renderer2D* renderer, Shader& shader, maths::Mat4 projectionMatrix);

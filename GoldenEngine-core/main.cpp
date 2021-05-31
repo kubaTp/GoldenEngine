@@ -1,3 +1,5 @@
+#include "src/utils/timer.h" // needs to be attached first to avoid errrors with windows.h
+
 #include "src/graphics/window.h"
 #include "src/graphics/shader.h"
 #include "src/maths/maths.h"
@@ -13,7 +15,6 @@
 #include "src/graphics/batchrenderer2D.h"
 
 #include "time.h"
-#include "src/utils/timer.h"
 
 #include "src/graphics/staticsprite.h"
 #include "src/graphics/sprite.h"
@@ -27,7 +28,6 @@
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
 
-// TODO : experiment with the shaders and set up them
 
 #pragma region IMAGE_LOADING_TEST
 #if 0
@@ -102,7 +102,15 @@ int main()
 	shader.enable();
 	shader.setUniform2f("light_pos", Vec2(0, 0));
 
-	TileLayer layer(shader); // layer of sprites
+	TileLayer layer(shader); // main layer of sprites
+	
+	Texture texture("img/24Bit_img.png");
+
+	Texture textures[] = 
+	{
+		Texture("img/24Bit_img.png"),
+		Texture("img/24Bit_img_2.png")
+	};
 
 	#pragma region MAX_SPRITE_AMOUNT
 
@@ -119,7 +127,8 @@ int main()
 		{
 			for (float x = -16.0f; x < 16.0f; x++)
 			{
-				layer.add(new Sprite(x, y, 0.9f, 0.9f, maths::Vec4(1, rand() % 1000 / 1000.0f, 0, 1)));
+				//layer.add(new Sprite(x, y, 0.9f, 0.9f, maths::Vec4(1, rand() % 1000 / 1000.0f, 0, 1)));
+				layer.add(new Sprite(x, y, 0.9f, 0.9f, rand() % 2 == 0 ?  &textures[0] : &textures[1]));
 			}
 		}
 
@@ -127,20 +136,19 @@ int main()
 
 #pragma endregion
 
-	Texture texture("img/24Bit_img.png");
-	texture.bind();
-
-	glActiveTexture(GL_TEXTURE0);
+	GLint textIDs[] =
+	{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+	};
 
 	shader.enable();
-	shader.setUniform1f("tex", 0);
+	shader.setUniform1iv("textures", textIDs, 10);
 
 	Timer timer;
 	short frameCounter = 0, deltaTime = 0;
 	// GAME LOOP
 	while (!window.closed())
 	{
-		// SOME TEXTURES :(
 
 		window.clear();
 		frameCounter++;
@@ -151,6 +159,7 @@ int main()
 
 		shader.enable();
 		shader.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		shader.setUniformMat4("ml_matrix", maths::Mat4::rotation(timer.elapsed() * 5, Vec3(0, 0, 1)));
 
 		layer.render(); // submits new sprites and draw it, sprites are stored in layer
 
@@ -158,7 +167,7 @@ int main()
 		/*display fps*/
 		if (timer.elapsed() - deltaTime > 1.0f) // every second
 		{
-			//printf("fps: %d\n", frameCounter);
+			printf("fps: %d\n", frameCounter);
 
 			frameCounter = 0;
 			deltaTime++;
