@@ -24,6 +24,4 @@ namespace golden { namespace graphics {
 	}
 
 	void Group::add(Renderable2D* renderable) { m_Renderables.push_back(renderable); }
-
-	void Group::changeTransformationMatrix(const maths::Mat4& transformationMatrix) { m_TransformationMatrix = transformationMatrix; }
 }}

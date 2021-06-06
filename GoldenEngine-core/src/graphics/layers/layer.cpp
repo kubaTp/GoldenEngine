@@ -29,12 +29,11 @@ namespace golden { namespace graphics {
 		m_Renderer->begin();
 
 		for (const Renderable2D* renderable : m_RenderablesQueue)
-		{
 			renderable->submit(m_Renderer);
-		}
 
 		m_Renderer->end();
 		m_Renderer->flush();
+		m_Shader.disabled();
 	}
 
 	void Layer::changePrMatrix(maths::Mat4 projectionMatrix)

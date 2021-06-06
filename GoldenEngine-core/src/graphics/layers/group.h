@@ -4,6 +4,8 @@
 
 namespace golden { namespace graphics {
 
+	// TODO : setup to work with labels, maybe because of transformationmatrixback
+
 	class Group : public Renderable2D
 	{
 	private:
@@ -16,6 +18,6 @@ namespace golden { namespace graphics {
 
 		void submit(Renderer2D* renderer) const override; // push m_TransformationMatrix to transformation stack in renderer, submit sprites to specyfic renderer, delete given m_TransformationMatrix from transformation stack in renderer
 		void add(Renderable2D* renderable); // add a renderable to m_Renderables
-		void changeTransformationMatrix(const maths::Mat4& transformationMatrix); // change transformation matrix after conctruciting object
+		void changeTransformationMatrix(const maths::Mat4& transformationMatrix) { m_TransformationMatrix = transformationMatrix; } // change transformation matrix after conctruciting object
 	};
 }}

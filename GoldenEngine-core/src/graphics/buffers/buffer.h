@@ -2,22 +2,22 @@
 
 #include <GL/glew.h>
 
-namespace golden { namespace graphics {
-	
+namespace golden {
+	namespace graphics {
+		class Buffer
+		{
+		private:
+			unsigned int m_BufferID;
+			unsigned int m_ComponentCount; //vec2 = 2 || 2 * vec2 = 4
 
-	class Buffer
-	{
-	private:
-		GLuint m_BufferID;
-		GLuint m_ComponentCount; //vec2 = 2 || 2 * vec2 = 4
+		public:
+			Buffer(GLfloat* data, GLsizei count, GLuint compoenentCount);
+			~Buffer();
 
-	public:
-		Buffer(GLfloat* data, GLsizei count,  GLuint compoenentCount);
-		~Buffer();
+			void bind() const;
+			void unbind() const;
 
-		void bind() const;
-		void unbind() const;
-
-		inline GLuint getComponentCount() const { return m_ComponentCount; }
-	};
-}}
+			inline unsigned int getComponentCount() const { return m_ComponentCount; }
+		};
+	}
+}

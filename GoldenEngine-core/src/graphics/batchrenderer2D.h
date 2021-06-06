@@ -4,8 +4,9 @@
 
 #include "renderer2D.h"
 #include "buffers/indexbuffer.h"
-
 #include "renderable2D.h"
+
+#include "../../extLibs/freetype-gl/freetype-gl.h"
 
 namespace golden { namespace graphics {
 
@@ -20,27 +21,29 @@ namespace golden { namespace graphics {
 #define SHADER_TID_INDEX	2
 #define SHADER_COLOR_INDEX	3
 
-	class BatchRenderer2D : public Renderer2D
-	{
-	private:
-		IndexBuffer* m_IBO;
+		class BatchRenderer2D : public Renderer2D
+		{
+		public:
+			BatchRenderer2D();
+			~BatchRenderer2D();
 
-		GLsizei m_IndexCount; //counter to know how many sprites need to be draw, put in vertiecies count
-		GLuint m_VBO; //is going to be main buffer which contains all of data, 60k, EBO -> everything buffer object
-		GLuint m_VAO;
+			void begin() override; // bind buffers
+			void submit(const Renderable2D* renderable) override; // submit data to buffer
+			void drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) override;
+			void flush() override; // draw elements
+			void end() override; // unbind buffers
 
-		VertexData* m_Buffer;
-		std::vector<GLuint> m_TextureSlots;
-	public:
-		BatchRenderer2D();
-		~BatchRenderer2D();
+		private:
+			void init(); // big function called in conctructor
 
-		void begin() override; // bind buffers
-		void submit(const Renderable2D* renderable) override; // submit data to buffer
-		void flush() override; // draw elements
-		void end() override; // unbind buffers
+		private:
+			IndexBuffer* m_IBO;
 
-	private:
-		void init(); // big function called in conctructor
-	};
+			GLsizei m_IndexCount; //counter to know how many sprites need to be draw, put in vertiecies count
+			GLuint m_VBO; //is going to be main buffer which contains all of data, 60k, EBO -> everything buffer object
+			GLuint m_VAO;
+			VertexData* m_Buffer;
+
+			std::vector<GLuint> m_TextureSlots;
+		};
 }}

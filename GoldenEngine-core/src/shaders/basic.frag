@@ -17,16 +17,14 @@ uniform sampler2D textures[32];
 
 void main()
 {
-	float intensity = 1.0f / length(fs_in.position.xy - light_pos) * 0.8;
+	float intensity = 1.0f / length(fs_in.position.xy - light_pos) * 2;
 	vec4 texColor = fs_in.color;
 
 	if(fs_in.tid > 0.0)
 	{
-		int tid = int(fs_in.tid - 0.5); // safe equal
-		texColor = texture(textures[tid], fs_in.uv);
-		//texColor = vec4(tid, 0, 0, 1);
+		int tid = int(fs_in.tid - 0.5); // downscaling in safe way
+		texColor = fs_in.color * texture(textures[tid], fs_in.uv);
 	}
 
 	color = texColor * intensity;
-	//gl_FragColor = vec4(gl_TexCoord[0].s, 0, 0, 1);
 }

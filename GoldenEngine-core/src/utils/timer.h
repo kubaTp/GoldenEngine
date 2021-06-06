@@ -3,14 +3,25 @@
 #include "Windows.h"
 
 namespace golden {
-	class Timer
-	{
-	private:
-		LARGE_INTEGER m_Start;
-		double m_Frequency;
 
+	static class Timer
+	{
 	public:
-		Timer()
+		static void reset() { QueryPerformanceCounter(&m_Start); }
+
+		static float elapsed()
+		{
+			LARGE_INTEGER current;
+			QueryPerformanceCounter(&current);
+			unsigned __int64 cycles = current.QuadPart - m_Start.QuadPart;
+			return (float)(cycles * m_Frequency);
+		}
+
+	private:
+		static LARGE_INTEGER m_Start;
+		static double m_Frequency;
+
+		static void startTimer()
 		{
 			LARGE_INTEGER frequency;
 			QueryPerformanceFrequency(&frequency);
@@ -18,15 +29,5 @@ namespace golden {
 			QueryPerformanceCounter(&m_Start);
 		}
 
-		void reset() { QueryPerformanceCounter(&m_Start); }
-
-		float elapsed()
-		{
-			LARGE_INTEGER current;
-			QueryPerformanceCounter(&current);
-			unsigned __int64 cycles = current.QuadPart - m_Start.QuadPart;
-			return (float)(cycles * m_Frequency);
-		}
 	};
-
 }

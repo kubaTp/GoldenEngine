@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <vector>
+#include "font.h"
 #include "../maths/maths.h"
 
 namespace golden { namespace graphics {
@@ -24,12 +25,16 @@ namespace golden { namespace graphics {
 	public:
 		void push(const maths::Mat4& matrix, bool override = false)
 		{
-			if(override) // if the last one of mat4 needs to be overriden
+			if (override) // if the last one of mat4 needs to be overriden
+			{
 				m_TransformationStack.push_back(matrix);
+			}
 			else
-				m_TransformationStack.push_back(m_TransformationStack.back() * matrix); // push new matrix on the end which is multiplied by last one of the m_TransformationStack
-			
-			m_TransformationStackBack = &m_TransformationStack.back();  // assign the last of mat4 to the m_TransformationStackBack
+			{
+				m_TransformationStack.push_back(matrix * m_TransformationStack.back()); // push new matrix on the end which is multiplied by last one of the m_TransformationStack
+			}
+
+			m_TransformationStackBack = &m_TransformationStack.back();
 		}
 
 		void pop()
@@ -43,6 +48,7 @@ namespace golden { namespace graphics {
 
 		virtual void begin() {} // asssign all buffers
 		virtual void submit(const Renderable2D* renderable) = 0; // submit sprite to the renderer
+		virtual void drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) {}
 		virtual void flush() = 0; // drawcall
 		virtual void end() {} // unbind all buffers
 	};
