@@ -80,10 +80,10 @@ int main()
 	Sprite* transparentSprite = new Sprite(-2, -2, 4, 4, &textures[2]);
 	layer.add(transparentSprite); // transparent one sprite
 
-#if 0
-	layer.add(new Sprite(2.5f, -2, 4, 4, &textures[0])); // 24 bit one sprite
-	layer.add(new Sprite(7.0f, -2, 4, 4, Vec4(1, 1, 1, 1)));
-#endif
+	#if 0
+		layer.add(new Sprite(2.5f, -2, 4, 4, &textures[0])); // 24 bit one sprite
+		layer.add(new Sprite(7.0f, -2, 4, 4, Vec4(1, 1, 1, 1)));
+	#endif
 
 	FontManager::add(new Font(FontType::Inter_Regular, "fonts/Inter-Regular.ttf", 21));
 	FontManager::add(new Font(FontType::Jura, "fonts/Jura.ttf", 29));
