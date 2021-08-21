@@ -11,6 +11,8 @@
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
 
+// TODO: set up IMGUI
+
 #if 1
 int main()
 {
@@ -139,12 +141,6 @@ int main()
 		ImGui::Text("counter: %d", counter);
 		ImGui::End();
 
-
-		if (showAnotherWindow)
-		{
-
-		}
-
 		if (firstFrame) // start method
 		{
 			SoundManager::changeVolume(0.3f);
@@ -226,9 +222,12 @@ int main()
 
 	srand(time(NULL));
 
+#if 0
 	SoundManager::add(new Sound("guitar", "music/guitar.wav", true));
 	SoundManager::add(new Sound("barbarian", "music/barbarian.wav", true));
 	SoundManager::add(new Sound("buttonclick", "music/buttonclick.mp3"));
+#endif
+
 	SoundManager::add(new Sound("menu", "music/menumusic.mp3"));
 
 	Window window("Golden Engine", 960.0f, 540.0f);
@@ -247,6 +246,11 @@ int main()
 			firstFrame = false;
 		}
 
+		glBegin(GL_TRIANGLES);
+		glVertex2f(-0.5f, 0.0f);
+		glVertex2f(0, 0.5f);
+		glVertex2f(0.5f, 0.0f);
+		glEnd();
 		window.clear();
 
 		window.update();
@@ -299,7 +303,7 @@ int main()
 #pragma endregion
 
 #pragma region 3D_TESTING
-#if 1
+#if 0
 
 int main()
 {
