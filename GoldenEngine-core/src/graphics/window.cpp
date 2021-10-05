@@ -71,7 +71,7 @@ namespace golden { namespace graphics {
 		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 		ImGui_ImplOpenGL3_Init("#version 330 core");
 
-		std::cout << "Golden Engine 1.0.01\n" <<  "irrKlang sound library version 1.6.0" << "\nOpenGL: " << glGetString(GL_VERSION) << '\n' << std::endl;
+		Logger::logGoldenEngine();
 
 		glEnable(GL_BLEND); // enable blending for alfa
 		//glEnable(GL_DEPTH_TEST);

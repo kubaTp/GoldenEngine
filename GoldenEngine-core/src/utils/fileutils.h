@@ -51,6 +51,8 @@ namespace golden {
 #endif
 #pragma endregion
 
+		
+		//std::cout << "path : " << filepath << std::endl;
 		throw std::runtime_error("Golden Engine 'read_file()' error: failed to read a file!");
 	}
 }

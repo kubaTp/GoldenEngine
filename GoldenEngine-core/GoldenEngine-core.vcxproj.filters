@@ -303,6 +303,15 @@
     <ClCompile Include="extLibs\imgui\impl\imgui_impl_glfw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\resourceloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\chief.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extLibs\freetype\include\ft2build.h">
@@ -428,7 +437,7 @@
     <ClInclude Include="src\graphics\font.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="GoldenEngine_Core.h">
+    <ClInclude Include="core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\timestep.h">
@@ -440,7 +449,7 @@
     <ClInclude Include="src\sound\soundmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GoldenEngineBufferPack.h">
+    <ClInclude Include="src\graphics\buffers\bufferpack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extLibs\imgui\impl\imgui_impl_opengl3.h">
@@ -467,6 +476,15 @@
     <ClInclude Include="extLibs\imgui\impl\imgui_impl_glfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\resourceloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\chief.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\basic.frag">
@@ -481,5 +499,6 @@
     <None Include="src\graphics\fontmanager.h">
       <Filter>Header Files\graphics</Filter>
     </None>
+    <None Include="..\premake5.lua" />
   </ItemGroup>
 </Project>

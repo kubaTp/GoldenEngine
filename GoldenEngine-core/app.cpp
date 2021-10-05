@@ -1,17 +1,12 @@
-#include "GoldenEngine_Core.h"
-
-#include "time.h"
-
-#ifdef AUDIO_TEST
-	#include <irrKlang.h>
-#endif
-
-#define endl '\n'
+#define PREDEFINED_MACROS
+#include "core.h"
 
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
 
-// TODO: set up IMGUI
+#define CHIEF_RENDERING 1
+
+// TODO : add rendering to image and setup ImGUI viewport
 
 #if 1
 int main()
@@ -24,32 +19,41 @@ int main()
 	system("CLS");
 	srand(time(NULL));
 
-	SoundManager::add(new Sound("guitar", "music/guitar.wav", true));
-	SoundManager::add(new Sound("barbarian", "music/barbarian.wav", true));
-	SoundManager::add(new Sound("buttonclick", "music/buttonclick.mp3"));
-	SoundManager::add(new Sound("menu", "music/menumusic.mp3"));
+	rs::setResourcePath("D:/Code/Games Engine/GoldenEngine/assets/");
+
+	SoundManager::add(new Sound("guitar", rs::findFile("music/guitar.wav"), true));
+	SoundManager::add(new Sound("barbarian", rs::findFile("music/barbarian.wav"), true));
+	SoundManager::add(new Sound("buttonclick", rs::findFile("music/buttonclick.mp3")));
+	SoundManager::add(new Sound("menu", rs::findFile("music/menumusic.mp3")));
 
 	Window window("Golden Engine", 960.0f, 540.0f);
 	window.clear();
 
+	Chief::init(new BatchRenderer2D());
 	// projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
 
-	Shader shader("src/shaders/basic.vert", "src/shaders/basic.frag");
-	Shader shader2("src/shaders/basic.vert", "src/shaders/font.frag");
+	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
+	Shader font_shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
 	shader.enable();
 	shader.setUniform2f("light_pos", Vec2(0, 0));
 
-	TileLayer layer(shader);
+	TileLayer layer(font_shader);
 	TileLayer background_layer(shader);
-	TileLayer uiLayer(shader2);
+	TileLayer uiLayer(font_shader);
+
+	Chief::addLayer("layer", &layer);
+	Chief::addLayer("bg_layer", &background_layer);
+	Chief::addLayer("uiLayer", &uiLayer);
+
+	Chief::descLayers();
 
 	Texture textures[] =
 	{
-		Texture("img/24Bit_img_2.png"),
-		Texture("img/24Bit_img_chess.png"),
-		//Texture("img/24Bit_img_chess_2.png"),
-		Texture("img/transparent.png"),
-		Texture("img/sky.png")
+		Texture(rs::findFile("img/24Bit_img_2.png")),
+		Texture(rs::findFile("img/24Bit_img_chess.png")),
+		//Texture(rs::findFile("img/24Bit_img_chess_2.png")),
+		Texture(rs::findFile("img/transparent.png")),
+		Texture(rs::findFile("img/sky.png"))
 	};
 
 	#pragma region SPRITE_SUBMITING
@@ -79,7 +83,7 @@ int main()
 	Sprite* sky_bg = new Sprite(-16.0f, -9.0f, 32, 20, &textures[3]);
 	background_layer.add(sky_bg);
 
-	Sprite* transparentSprite = new Sprite(-2, -2, 4, 4, &textures[2]);
+	Sprite* transparentSprite = new Sprite(-2, -2, 2.5f, 2.5f, &textures[2]);
 	layer.add(transparentSprite); // transparent one sprite
 
 	#if 0
@@ -87,9 +91,9 @@ int main()
 		layer.add(new Sprite(7.0f, -2, 4, 4, Vec4(1, 1, 1, 1)));
 	#endif
 
-	FontManager::add(new Font(FontType::Inter_Regular, "fonts/Inter-Regular.ttf", 21));
-	FontManager::add(new Font(FontType::Jura, "fonts/Jura.ttf", 29));
-	FontManager::add(new Font(FontType::SourceSerifPro, "fonts/SourceSerifPro-Regular.ttf", 21));
+	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 21));
+	FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 29));
+	FontManager::add(new Font(FontType::SourceSerifPro, rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
 
 	Label* fpsLabel = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
 	Label* nameLabel = new Label("Golden Engine 1.0.01", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
@@ -105,16 +109,16 @@ int main()
 	shader.setUniform1iv("textures", textIDs, 10);
 
 	double x, y;
-
+	
 	Mat4 rotationMatrix = Mat4::idenity();
 	//Mat4 translationMatrix = Mat4::idenity();
 
 	float deltaTime = 0.0f, f = 0.0f;
-	bool showDemoWindow = false, showAnotherWindow = false;
+	bool showDemoWindow = false;
 	uint16_t counter = 0;
 	Vec3 newPos;
 
-	// GAME LOOP
+	/*--- GAME LOOP ---*/
 	while (!window.closed())
 	{
 		static bool firstFrame = true;
@@ -128,10 +132,9 @@ int main()
 		if (showDemoWindow)
 			ImGui::ShowDemoWindow();
 
-		ImGui::Begin("Hello, world!");
-		ImGui::Text("Test txt");
-		ImGui::Checkbox("Show demo window", &showDemoWindow);
-		ImGui::Checkbox("Another window", &showAnotherWindow);
+		ImGui::Begin("Function panel");
+		ImGui::Text("Project sandox");
+		ImGui::Checkbox("Show content view", &showDemoWindow);
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 		ImGui::SameLine();
 		ImGui::Text("f: %f", f);
@@ -144,7 +147,7 @@ int main()
 		if (firstFrame) // start method
 		{
 			SoundManager::changeVolume(0.3f);
-			//SoundManager::play("menu");
+			SoundManager::play("menu");
 			firstFrame = false;
 		}
 
@@ -160,34 +163,25 @@ int main()
 		#pragma endregion
 
 		#pragma region BACKGROUND_MOVEMENT
-#if 0
-		
-#endif
-#pragma endregion
+		#pragma endregion
 
 		window.getMousePosition(x, y);
 		shader.enable();
 		shader.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
 
-		newPos = Vec3(window.getKeyboardInput(Input::Horizontal), window.getKeyboardInput(Input::Vertical), 0) * transparentSprite->getPosition();
+		newPos = Vec3(window.getKeyboardInput(Input::Horizontal), window.getKeyboardInput(Input::Vertical), 0);
 		transparentSprite->setPosition(&newPos);
 
 		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1)); 
 
 		shader.setUniformMat4("ml_matrix", rotationMatrix);
 
-		background_layer.render();
-		layer.render();
-		uiLayer.render();
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
 		#pragma region INPUT_TESTING
 #if 1
 		if (window.isMouseButtonPressedDown(GLFW_MOUSE_BUTTON_1))
-			std::cout << "mouse button 1 is down" << endl;
+			Logger::logInfo("mouse 1 button is down");
 
 		//if (window.isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
 			//std::cout << "mouse button works 2 times per frame" << endl;
@@ -199,6 +193,16 @@ int main()
 			//std::cout << "key works 2 times per frame" << endl;
 #endif
 	#pragma endregion
+
+#if 0
+		background_layer.render();
+		layer.render();
+		uiLayer.render();
+#else
+		Chief::renderer();
+#endif
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		window.update();
 	}
@@ -261,6 +265,7 @@ int main()
 #pragma endregion
 
 #pragma region SOUND_TEST
+#include <irrKlang.h>
 #if 0
 
 int main()

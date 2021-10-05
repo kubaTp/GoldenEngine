@@ -3,15 +3,10 @@
 namespace golden { 
 	namespace graphics {
 
-		Shader::Shader(const char* vertPath, const char* fragPath) : m_VertPath(vertPath), m_FragPath(fragPath)
-		{
-			m_ShaderID = load();
-		}
+		Shader::Shader(const char* vertPath, const char* fragPath) : m_VertPath(vertPath), m_FragPath(fragPath) { m_ShaderID = load(); }
+		Shader::Shader(std::string vertPath, std::string fragPath) : m_VertPath(vertPath.c_str()), m_FragPath(fragPath.c_str()) { m_ShaderID = load(); }
 
-		Shader::~Shader()
-		{
-			glDeleteProgram(m_ShaderID);
-		}
+		Shader::~Shader() { glDeleteProgram(m_ShaderID); }
 
 		GLuint Shader::load()
 		{

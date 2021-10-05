@@ -14,6 +14,8 @@ namespace golden {
 		{
 		public:
 			Shader(const char* vertPath, const char* fragPath);
+			Shader(std::string vertPath, std::string fragPath);
+
 			~Shader();
 
 			void setUniform1f(const GLchar* name, float value);

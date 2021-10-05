@@ -1,9 +1,11 @@
 #pragma once
+
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "../utils/timer.h"
+#include "../utils/logger.h"
 #include "../utils/timestep.h"
 
 #include "../../extLibs/imgui/imgui.h"

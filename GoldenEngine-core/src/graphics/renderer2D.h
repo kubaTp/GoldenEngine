@@ -50,6 +50,7 @@ namespace golden { namespace graphics {
 		virtual void submit(const Renderable2D* renderable) = 0; // submit sprite to the renderer
 		virtual void drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) {}
 		virtual void flush() = 0; // drawcall
+		virtual void reset() {} // abstact for renderer to reset data for next draw call for each layer
 		virtual void end() {} // unbind all buffers
 	};
 }}
