@@ -1,0 +1,3 @@
+1. try adding glm as main mat library
+2. use perspective over orthographic matrix
+3. Add rendering simple text (do not batch render fonts)

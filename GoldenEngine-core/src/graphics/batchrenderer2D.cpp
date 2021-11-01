@@ -25,12 +25,12 @@ namespace golden {
 			glBindVertexArray(m_VAO); // necessary to bind all attrib pointers to VAO
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-			glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW); // sprite size * how many sprites
 
-			glEnableVertexAttribArray(SHADER_VERTEX_INDEX);
-			glEnableVertexAttribArray(SHADER_UV_INDEX);
-			glEnableVertexAttribArray(SHADER_COLOR_INDEX);
-			glEnableVertexAttribArray(SHADER_TID_INDEX);
+			glEnableVertexAttribArray(SHADER_VERTEX_INDEX); // 0
+			glEnableVertexAttribArray(SHADER_UV_INDEX);		// 1
+			glEnableVertexAttribArray(SHADER_COLOR_INDEX);	// 2
+			glEnableVertexAttribArray(SHADER_TID_INDEX);	// 3
 
 			glVertexAttribPointer(SHADER_VERTEX_INDEX, 3, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)0); // 3 bc of 3 floats per vertex and it takes the same size as vertex and the first byte is 0
 			glVertexAttribPointer(SHADER_UV_INDEX, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const GLvoid*)offsetof(VertexData, VertexData::uv)); // offset to the specified member
@@ -58,7 +58,7 @@ namespace golden {
 
 			m_IBO = new IndexBuffer(indicies, RENDERER_INDICIES_SIZE); //count = 60k
 
-			glBindVertexArray(0);
+			glBindVertexArray(0); // unbinding at the end
 		}
 
 		void BatchRenderer2D::begin()

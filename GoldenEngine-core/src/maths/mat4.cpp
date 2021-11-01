@@ -30,6 +30,8 @@ namespace golden { namespace maths {
 
 	Mat4& Mat4::multiply(const Mat4& other)
 	{
+		//elements[row + col * 4]
+
 		float data[16];
 
 		for (int y = 0; y < 4; y++)
@@ -37,12 +39,13 @@ namespace golden { namespace maths {
 			for (int x = 0; x < 4; x++)
 			{
 				float sum = 0.0f;
-				for (int e = 0; e < 4; e++)
+				for (int e = 0; e < 4; e++) // elements
 				{
-					//first by a column second by a row
+					// first row, second column
 					sum += elements[x + e * 4] * other.elements[e + y * 4];
 				}
-				//set element value
+
+				// set element value
 				data[x + y * 4] = sum;
 			}
 		}

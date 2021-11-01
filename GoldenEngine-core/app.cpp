@@ -32,18 +32,20 @@ int main()
 	Chief::init(new BatchRenderer2D());
 	// projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
 
-	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
+	Shader shader_lighting(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
+	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
 	Shader font_shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
-	shader.enable();
-	shader.setUniform2f("light_pos", Vec2(0, 0));
+
+	shader_lighting.enable();
+	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
 	TileLayer layer(font_shader);
-	TileLayer background_layer(shader);
+	TileLayer background_layer(shader_lighting);
 	TileLayer uiLayer(font_shader);
 
 	Chief::addLayer("layer", &layer);
-	Chief::addLayer("bg_layer", &background_layer);
 	Chief::addLayer("uiLayer", &uiLayer);
+	Chief::addLayer("bg_layer", &background_layer);
 
 	Chief::descLayers();
 
@@ -96,7 +98,7 @@ int main()
 	FontManager::add(new Font(FontType::SourceSerifPro, rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
 
 	Label* fpsLabel = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
-	Label* nameLabel = new Label("Golden Engine 1.0.01", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
+	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
 	uiLayer.add(fpsLabel);
 	uiLayer.add(nameLabel);
 
@@ -107,6 +109,11 @@ int main()
 
 	shader.enable();
 	shader.setUniform1iv("textures", textIDs, 10);
+	shader.disabled();
+
+	shader_lighting.enable();
+	shader_lighting.setUniform1iv("textures", textIDs, 10);
+	shader_lighting.disabled();
 
 	double x, y;
 	
@@ -162,19 +169,17 @@ int main()
 #endif
 		#pragma endregion
 
-		#pragma region BACKGROUND_MOVEMENT
-		#pragma endregion
-
 		window.getMousePosition(x, y);
-		shader.enable();
-		shader.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		shader_lighting.enable();
+		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		shader_lighting.disabled();
 
 		newPos = Vec3(window.getKeyboardInput(Input::Horizontal), window.getKeyboardInput(Input::Vertical), 0);
 		transparentSprite->setPosition(&newPos);
 
 		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1)); 
 
-		shader.setUniformMat4("ml_matrix", rotationMatrix);
+		//shader.setUniformMat4("ml_matrix", rotationMatrix);
 
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
@@ -194,13 +199,8 @@ int main()
 #endif
 	#pragma endregion
 
-#if 0
-		background_layer.render();
-		layer.render();
-		uiLayer.render();
-#else
 		Chief::renderer();
-#endif
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -212,108 +212,93 @@ int main()
 }
 #endif
 
-#pragma region EXT_TEST
-#if 0
-
-int main()
-{
-	system("CLS");
-
-	using namespace golden;
-	using namespace graphics;
-	using namespace maths;
-	using namespace sound;
-
-	srand(time(NULL));
-
-#if 0
-	SoundManager::add(new Sound("guitar", "music/guitar.wav", true));
-	SoundManager::add(new Sound("barbarian", "music/barbarian.wav", true));
-	SoundManager::add(new Sound("buttonclick", "music/buttonclick.mp3"));
-#endif
-
-	SoundManager::add(new Sound("menu", "music/menumusic.mp3"));
-
-	Window window("Golden Engine", 960.0f, 540.0f);
-	window.clear();
-
-	// GAME LOOP
-	while (!window.closed())
-	{
-		static bool firstFrame = true;
-		window.clear();
-
-		if (firstFrame) // start method
-		{
-			SoundManager::changeVolume(0.3f);
-			SoundManager::play("menu");
-			firstFrame = false;
-		}
-
-		glBegin(GL_TRIANGLES);
-		glVertex2f(-0.5f, 0.0f);
-		glVertex2f(0, 0.5f);
-		glVertex2f(0.5f, 0.0f);
-		glEnd();
-		window.clear();
-
-		window.update();
-	}
-	return 0;
-}
-#endif
-#pragma endregion
-
-#pragma region SOUND_TEST
-#include <irrKlang.h>
-#if 0
-
-int main()
-{
-#if 0
-	using namespace golden;
-	using namespace sound;
-
-	SoundManager::add(new Sound("guitar", "music/guitar.wav"));
-	SoundManager::add(new Sound("barbarian", "music/barbarian.wav"));
-
-	SoundManager::play("barbarian");
-
-	char i = 0;
-	std::cin >> i;
-
-	return 0
-#endif
-
-#if 0
-		irrklang::ISoundEngine * sound_engine = irrklang::createIrrKlangDevice();
-
-	if (!sound_engine)
-	{
-		std::cout << "irrklang error!" << endl;
-		return 0;
-	}
-
-	sound_engine->play2D("guitar.wav", false);
-
-	char i = 0;
-	std::cin >> i;
-
-	sound_engine->drop();
-	return 0;
-#endif
-}
-
-#endif
-#pragma endregion
-
 #pragma region 3D_TESTING
 #if 0
 
 int main()
 {
+	using namespace golden;
+	using namespace graphics;
+	using namespace maths;
+	using namespace sound;
+
+	Window window("3d test", 512, 512);
+	window.clear();
+
+	static const GLfloat g_vertex_buffer_data[] = {
+		-0.5f,-0.5f,-0.5f, // triangle 1 : begin
+		-0.5f,-0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f, // triangle 1 : end
+		0.5f, 0.5f,-0.5f, // triangle 2 : begin
+		-0.5f,-0.5f,-0.5f,
+		-0.5f, 0.5f,-0.5f, // triangle 2 : end
+		0.5f,-0.5f, 0.5f,
+		-0.5f,-0.5f,-0.5f,
+		0.5f,-0.5f,-0.5f,
+		0.5f, 0.5f,-0.5f,
+		0.5f,-0.5f,-0.5f,
+		-0.5f,-0.5f,-0.5f,
+		-0.5f,-0.5f,-0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f,-0.5f,
+		0.5f,-0.5f, 0.5f,
+		-0.5f,-0.5f, 0.5f,
+		-0.5f,-0.5f,-0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f,-0.5f, 0.5f,
+		0.5f,-0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		0.5f,-0.5f,-0.5f,
+		0.5f, 0.5f,-0.5f,
+		0.5f,-0.5f,-0.5f,
+		0.5f, 0.5f, 0.5f,
+		0.5f,-0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		0.5f, 0.5f,-0.5f,
+		-0.5f, 0.5f,-0.5f,
+		0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f,-0.5f,
+		-0.5f, 0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f,
+		0.5f,-0.5f, 0.5f
+	};
+	
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer);	
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+	while(!window.closed())
+	{
+		window.clear();
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glRotatef(45, 0, 1, 0);
+
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(
+			0,                 
+			3,                 
+			GL_FLOAT,          
+			GL_FALSE,          
+			0,                 
+			(void*)0           
+		);
+
+		glDrawArrays(GL_TRIANGLES, 0, 12*3);
+		glDisableVertexAttribArray(0);
+
+		glPopMatrix();
+
+		window.update();
+	}
+
 	return 0;
 }
+
 #endif
 #pragma endregion
 
@@ -370,5 +355,211 @@ int main()
 
 	return 0;
 }
+#endif
+#pragma endregion
+
+#pragma region EXT_TEST
+#if 0
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <cstdlib>
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength);
+
+GLfloat rotationX = 0.0f;
+GLfloat rotationY = 0.0f;
+
+int main(void)
+{
+	GLFWwindow* window;
+
+	// Initialize the library
+	if (!glfwInit())
+	{
+		return -1;
+	}
+
+	// Create a windowed mode window and its OpenGL context
+	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
+
+	glfwSetKeyCallback(window, keyCallback);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+
+
+	int screenWidth, screenHeight;
+	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+
+	if (!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	glViewport(0.0f, 0.0f, screenWidth, screenHeight);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 1000);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	GLfloat halfScreenWidth = SCREEN_WIDTH / 2;
+	GLfloat halfScreenHeight = SCREEN_HEIGHT / 2;
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glPushMatrix();
+		glTranslatef(halfScreenWidth, halfScreenHeight, -500);
+		glRotatef(rotationX, 1, 0, 0);
+		glRotatef(rotationY, 0, 1, 0);
+		glTranslatef(-halfScreenWidth, -halfScreenHeight, 500);
+
+		DrawCube(halfScreenWidth, halfScreenHeight, -500, 200);
+
+		glPopMatrix();
+
+		glfwSwapBuffers(window);
+
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
+
+	return 0;
+}
+
+
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	//std::cout << key << std::endl;
+
+	const GLfloat rotationSpeed = 10;
+
+	// actions are GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_W:
+			rotationX -= rotationSpeed;
+			break;
+		case GLFW_KEY_S:
+			rotationX += rotationSpeed;
+			break;
+		case GLFW_KEY_D:
+			rotationY += rotationSpeed;
+			break;
+		case GLFW_KEY_A:
+			rotationY -= rotationSpeed;
+			break;
+		}
+	}
+}
+
+void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
+{
+	GLfloat halfSideLength = edgeLength * 0.5f;
+
+	GLfloat vertices[] =
+	{
+		// front face
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom right
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+
+		// back face
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top left
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom left
+
+		// left face
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+
+		// right face
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+
+		// top face
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // bottom right
+		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // bottom left
+
+		// top face
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // top left
+		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // top right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength  // bottom left
+	};
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glColor3f( colour[0], colour[1], colour[2] );
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, vertices);
+	
+	glDrawArrays(GL_QUADS, 0, 24);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+#endif
+#pragma endregion
+
+#pragma region SOUND_TEST
+#include <irrKlang.h>
+#if 0
+
+int main()
+{
+#if 0
+	using namespace golden;
+	using namespace sound;
+
+	SoundManager::add(new Sound("guitar", "music/guitar.wav"));
+	SoundManager::add(new Sound("barbarian", "music/barbarian.wav"));
+
+	SoundManager::play("barbarian");
+
+	char i = 0;
+	std::cin >> i;
+
+	return 0
+#endif
+
+#if 0
+		irrklang::ISoundEngine * sound_engine = irrklang::createIrrKlangDevice();
+
+	if (!sound_engine)
+	{
+		std::cout << "irrklang error!" << endl;
+		return 0;
+	}
+
+	sound_engine->play2D("guitar.wav", false);
+
+	char i = 0;
+	std::cin >> i;
+
+	sound_engine->drop();
+	return 0;
+#endif
+}
+
 #endif
 #pragma endregion

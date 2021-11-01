@@ -14,7 +14,7 @@ namespace golden { namespace graphics {
 	#define RENDERER_VERTEX_SIZE	sizeof(VertexData) //it grows with members of POD called VertexData
 	#define RENDERER_SPRITE_SIZE	RENDERER_VERTEX_SIZE * 4 //size of vertex times 4 bc of rectangles and squares
 	#define RENDERER_BUFFER_SIZE	RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES //size of buffer given to GPU
-	#define RENDERER_INDICIES_SIZE	RENDERER_MAX_SPRITES * 6
+	#define RENDERER_INDICIES_SIZE	RENDERER_MAX_SPRITES * 6 // everyone 2d sprite has 6 indcies
 
 	#define SHADER_VERTEX_INDEX 0
 	#define SHADER_UV_INDEX		1
@@ -44,7 +44,7 @@ namespace golden { namespace graphics {
 		GLsizei m_IndexCount; //counter to know how many sprites need to be draw, put in vertiecies count
 		GLuint m_VBO; //is going to be main buffer which contains all of data, 60k, EBO -> everything buffer object
 		GLuint m_VAO;
-		VertexData* m_Buffer;
+		VertexData* m_Buffer; // representation of vertex in struct
 
 		std::vector<GLuint> m_TextureSlots;
 	};
