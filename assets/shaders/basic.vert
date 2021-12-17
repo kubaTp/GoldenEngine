@@ -20,7 +20,7 @@ out DATA
 
 void main()
 {
-	vs_out.position =  ml_matrix * position;
+	vs_out.position = ml_matrix * position;
 	vs_out.uv = uv;
 	vs_out.color = color;
 	vs_out.tid = tid;
