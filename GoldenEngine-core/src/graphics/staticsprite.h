@@ -4,20 +4,20 @@
 
 namespace golden { namespace graphics {
 
-		class StaticSprite : public Renderable2D
-		{
-		private:
-			VertexArray* m_VertexArray;
-			IndexBuffer* m_IndexBuffer;
-			Shader& m_Shader;
+	class StaticSprite : public Renderable2D
+	{
+	private:
+		VertexArray* m_VertexArray;
+		IndexBuffer* m_IndexBuffer;
+		Shader& m_Shader;
 
-		public:
-			StaticSprite(float x, float y, float width, float heigh, const maths::Vec4& color, Shader& shader);
-			~StaticSprite();
+	public:
+		StaticSprite(float x, float y, float width, float heigh, const maths::Vec4& color, Shader& shader);
+		~StaticSprite();
 
-			inline const VertexArray* getVAO() const { return m_VertexArray; }
-			inline const IndexBuffer* getIBO() const { return m_IndexBuffer; }
+		inline const VertexArray* getVAO() const { return m_VertexArray; }
+		inline const IndexBuffer* getIBO() const { return m_IndexBuffer; }
 
-			inline Shader& getShader() const { return m_Shader; }
-		};
+		inline Shader& getShader() const { return m_Shader; }
+	};
 }}

@@ -181,6 +181,8 @@ typedef unsigned long  ulg;
    extern void zmemzero OF((Bytef* dest, uInt len));
 #endif
 
+/*Golden Engine internal change */
+#if 0
 /* Diagnostic functions */
 #ifdef DEBUG
 #  include <stdio.h>
@@ -200,7 +202,14 @@ typedef unsigned long  ulg;
 #  define Tracec(c,x)
 #  define Tracecv(c,x)
 #endif
-
+#else
+#  define Assert(cond,msg)
+#  define Trace(x)
+#  define Tracev(x)
+#  define Tracevv(x)
+#  define Tracec(c,x)
+#  define Tracecv(c,x)
+#endif
 
 typedef uLong (*check_func) OF((uLong check, const Bytef *buf,
                                 uInt len));

@@ -1,12 +1,26 @@
 #define PREDEFINED_MACROS
-#include "core.h"
+#include "src/core.h"
 
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
 
 #define CHIEF_RENDERING 1
 
-// TODO : add rendering to image and setup ImGUI viewport
+#define GE_EDITOR 0
+// projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
+// TODO : scene abstraction ( framebuffer in chief )
+// TODO : implement ECS
+
+void CustomStartMethod()
+{
+	golden::Logger::logInfo("Custom start method behaviour");
+	//exit(0);
+}
+
+void CustomUpdateMethod()
+{
+	golden::Logger::logInfo("Custom update method behaviour");
+}
 
 #if 1
 int main()
@@ -19,7 +33,7 @@ int main()
 	system("CLS");
 	srand(time(NULL));
 
-	rs::setResourcePath("D:/Code/Games Engine/GoldenEngine/assets/");
+	rs::setResourcePath("D:/Code/Games Engine/practice/GoldenEngine/assets/");
 
 	SoundManager::add(new Sound("guitar", rs::findFile("music/guitar.wav"), true));
 	SoundManager::add(new Sound("barbarian", rs::findFile("music/barbarian.wav"), true));
@@ -30,7 +44,6 @@ int main()
 	window.clear();
 
 	Chief::init(new BatchRenderer2D());
-	// projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
 
 	Shader shader_lighting(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
 	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
@@ -39,7 +52,7 @@ int main()
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
-	TileLayer layer(font_shader);
+	TileLayer layer(shader);
 	TileLayer background_layer(shader_lighting);
 	TileLayer uiLayer(font_shader);
 
@@ -53,8 +66,7 @@ int main()
 	{
 		Texture(rs::findFile("img/24Bit_img_2.png")),
 		Texture(rs::findFile("img/24Bit_img_chess.png")),
-		//Texture(rs::findFile("img/24Bit_img_chess_2.png")),
-		Texture(rs::findFile("img/transparent.png")),
+		Texture(rs::findFile("img/player_01.png")),
 		Texture(rs::findFile("img/sky.png"))
 	};
 
@@ -85,7 +97,7 @@ int main()
 	Sprite* sky_bg = new Sprite(-16.0f, -9.0f, 32, 20, &textures[3]);
 	background_layer.add(sky_bg);
 
-	Sprite* transparentSprite = new Sprite(-2, -2, 2.5f, 2.5f, &textures[2]);
+	Sprite* transparentSprite = new Sprite(-3, -3, 3, 3, &textures[2]);
 	layer.add(transparentSprite); // transparent one sprite
 
 	#if 0
@@ -102,6 +114,7 @@ int main()
 	uiLayer.add(fpsLabel);
 	uiLayer.add(nameLabel);
 
+	// TODO : add it in shader class
 	GLint textIDs[] =
 	{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -120,10 +133,15 @@ int main()
 	Mat4 rotationMatrix = Mat4::idenity();
 	//Mat4 translationMatrix = Mat4::idenity();
 
-	float deltaTime = 0.0f, f = 0.0f;
-	bool showDemoWindow = false;
-	uint16_t counter = 0;
+	SoundManager::changeVolume(0.3f);
+	float deltaTime = 0.0f, volume = SoundManager::getVolume();
 	Vec3 newPos;
+
+	//transparentSprite->setStart(&CustomStartMethod);
+	transparentSprite->getComponent("BehaviourComponent")->setOnStartFunction(&CustomStartMethod);
+	transparentSprite->getComponent("BehaviourComponent")->setOnUpdateFunction(&CustomUpdateMethod);
+
+	//transparentSprite->setUpdate(&CustomUpdateMethod);
 
 	/*--- GAME LOOP ---*/
 	while (!window.closed())
@@ -132,31 +150,38 @@ int main()
 		deltaTime += 0.001f;
 		window.clear();
 
+#if GE_EDITOR
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		if (showDemoWindow)
-			ImGui::ShowDemoWindow();
 
 		ImGui::Begin("Function panel");
-		ImGui::Text("Project sandox");
-		ImGui::Checkbox("Show content view", &showDemoWindow);
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-		ImGui::SameLine();
-		ImGui::Text("f: %f", f);
-		if (ImGui::Button("Button"))
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter: %d", counter);
+		ImGui::Text("Project Sanbox");
+		ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f);
+
+		ImGui::Image((void*)Chief::framebuffer->getBuffer(), ImVec2{ 320 * 1.5f, 180.0f * 1.5f });
 		ImGui::End();
+#endif
 
 		if (firstFrame) // start method
-		{
-			SoundManager::changeVolume(0.3f);
+		{	
+			SoundManager::changeVolume(0.6f);
 			SoundManager::play("menu");
+			//SoundManager::muteAudio();
 			firstFrame = false;
 		}
+
+
+		//rotationMatrix = Mat4::rotation(40, Vec3(0, 0, 1));
+		//rotationMatrix = Mat4::translation(Vec3(4.0f, 0.0f, 0.0f));
+		
+		//shader.enable();
+		//shader.setUniformMat4("ml_matrix", rotationMatrix);
+		//shader.disabled();
+
+
+		//SoundManager::changeVolume(volume);
 
 		#pragma region COLOR_CHANGING
 #if 0
@@ -169,29 +194,26 @@ int main()
 #endif
 		#pragma endregion
 
-		window.getMousePosition(x, y);
-		shader_lighting.enable();
-		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
-		shader_lighting.disabled();
+		usage::Input::getMousePosition(x, y);
+		//shader_lighting.enable();
+		//shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		//shader_lighting.disabled();
 
-		newPos = Vec3(window.getKeyboardInput(Input::Horizontal), window.getKeyboardInput(Input::Vertical), 0);
+		newPos = Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 		transparentSprite->setPosition(&newPos);
 
-		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1)); 
-
-		//shader.setUniformMat4("ml_matrix", rotationMatrix);
-
+		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1));
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
 		#pragma region INPUT_TESTING
 #if 1
-		if (window.isMouseButtonPressedDown(GLFW_MOUSE_BUTTON_1))
+		if (usage::Input::isMouseButtonPressedDown(GLFW_MOUSE_BUTTON_1))
 			Logger::logInfo("mouse 1 button is down");
 
 		//if (window.isMouseButtonDown(GLFW_MOUSE_BUTTON_1))
 			//std::cout << "mouse button works 2 times per frame" << endl;
 
-		if (window.isKeyPressedDown(GLFW_KEY_W) || window.isKeyPressedDown(GLFW_KEY_S) || window.isKeyPressedDown(GLFW_KEY_A) || window.isKeyPressedDown(GLFW_KEY_D))
+		if (usage::Input::isKeyPressedDown(GLFW_KEY_W) || usage::Input::isKeyPressedDown(GLFW_KEY_S) || usage::Input::isKeyPressedDown(GLFW_KEY_A) || usage::Input::isKeyPressedDown(GLFW_KEY_D))
 			SoundManager::play("buttonclick");
 
 		//if (window.isKeyDown(GLFW_KEY_T))
@@ -199,12 +221,15 @@ int main()
 #endif
 	#pragma endregion
 
-		Chief::renderer();
+		Chief::render();
+		//Chief::render("layer");
 
+#if GE_EDITOR
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+#endif
 		window.update();
+
 	}
 
 	SoundManager::destroy();
@@ -212,9 +237,8 @@ int main()
 }
 #endif
 
-#pragma region 3D_TESTING
+#pragma region EXT_TEST
 #if 0
-
 int main()
 {
 	using namespace golden;
@@ -222,83 +246,35 @@ int main()
 	using namespace maths;
 	using namespace sound;
 
-	Window window("3d test", 512, 512);
+	system("CLS");
+	srand(time(NULL));
+
+	rs::setResourcePath("D:/Code/Games Engine/GoldenEngine/assets/");
+
+	Window window("fb test", 960, 512);
 	window.clear();
 
-	static const GLfloat g_vertex_buffer_data[] = {
-		-0.5f,-0.5f,-0.5f, // triangle 1 : begin
-		-0.5f,-0.5f, 0.5f,
-		-0.5f, 0.5f, 0.5f, // triangle 1 : end
-		0.5f, 0.5f,-0.5f, // triangle 2 : begin
-		-0.5f,-0.5f,-0.5f,
-		-0.5f, 0.5f,-0.5f, // triangle 2 : end
-		0.5f,-0.5f, 0.5f,
-		-0.5f,-0.5f,-0.5f,
-		0.5f,-0.5f,-0.5f,
-		0.5f, 0.5f,-0.5f,
-		0.5f,-0.5f,-0.5f,
-		-0.5f,-0.5f,-0.5f,
-		-0.5f,-0.5f,-0.5f,
-		-0.5f, 0.5f, 0.5f,
-		-0.5f, 0.5f,-0.5f,
-		0.5f,-0.5f, 0.5f,
-		-0.5f,-0.5f, 0.5f,
-		-0.5f,-0.5f,-0.5f,
-		-0.5f, 0.5f, 0.5f,
-		-0.5f,-0.5f, 0.5f,
-		0.5f,-0.5f, 0.5f,
-		0.5f, 0.5f, 0.5f,
-		0.5f,-0.5f,-0.5f,
-		0.5f, 0.5f,-0.5f,
-		0.5f,-0.5f,-0.5f,
-		0.5f, 0.5f, 0.5f,
-		0.5f,-0.5f, 0.5f,
-		0.5f, 0.5f, 0.5f,
-		0.5f, 0.5f,-0.5f,
-		-0.5f, 0.5f,-0.5f,
-		0.5f, 0.5f, 0.5f,
-		-0.5f, 0.5f,-0.5f,
-		-0.5f, 0.5f, 0.5f,
-		0.5f, 0.5f, 0.5f,
-		-0.5f, 0.5f, 0.5f,
-		0.5f,-0.5f, 0.5f
-	};
-	
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);	
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	Simple2DRenderer renderer;
 
-	while(!window.closed())
+	Shader shader(rs::findFile("shaders/simple.vert"), rs::findFile("shaders/simple.frag"));
+	StaticSprite sprite(-2, -2, 4, 4, Vec4(0.2f , 0.3f, 0.4f, 1), shader);
+
+	renderer.submit(&sprite);
+
+	/*--- GAME LOOP ---*/
+	while (!window.closed())
 	{
-		window.clear();
 
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glRotatef(45, 0, 1, 0);
-
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(
-			0,                 
-			3,                 
-			GL_FLOAT,          
-			GL_FALSE,          
-			0,                 
-			(void*)0           
-		);
-
-		glDrawArrays(GL_TRIANGLES, 0, 12*3);
-		glDisableVertexAttribArray(0);
-
-		glPopMatrix();
+		// render
+		renderer.submit(&sprite);
+		renderer.flush();
 
 		window.update();
 	}
 
+	SoundManager::destroy();
 	return 0;
 }
-
 #endif
 #pragma endregion
 
@@ -358,7 +334,7 @@ int main()
 #endif
 #pragma endregion
 
-#pragma region EXT_TEST
+#pragma region 3D_TEST
 #if 0
 
 #include <GL/glew.h>

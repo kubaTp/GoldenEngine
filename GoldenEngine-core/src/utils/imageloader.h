@@ -1,42 +1,35 @@
 #pragma once
 
-#include <FreeImage.h>
+#include <GL/glew.h>
+
+#include <cstdint>
+#include <string>
+
+#include "../../extLibs/stb-image/stb_image.h"
 
 namespace golden {
 
-	static BYTE* load_image(const char* imgPath, GLsizei* width, GLsizei* height, uint8_t* channels)
+	static struct ImageLoader
 	{
-		FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-		//pointer to the image, once loaded
-		FIBITMAP* dib = nullptr;
+		static uint8_t* loadImage(std::string& imgPath, GLsizei* width, GLsizei* height, int& channels)
+		{
+			stbi_set_flip_vertically_on_load(1);
+			return stbi_load(imgPath.c_str(), width, height, &channels, 0);
+		}
 
-		fif = FreeImage_GetFileType(imgPath, 0);
-		if (fif == FIF_UNKNOWN)
-			fif = FreeImage_GetFIFFromFilename(imgPath);
-		if (fif == FIF_UNKNOWN)
-			return nullptr;
+		static uint8_t* loadImageNeutral(std::string& imgPath, GLsizei* width, GLsizei* height, int& channels)
+		{
+			return stbi_load(imgPath.c_str(), width, height, &channels, 0);
+		}
 
-		if (FreeImage_FIFSupportsReading(fif))
-			dib = FreeImage_Load(fif, imgPath);
-		if (!dib)
-			return nullptr;
+		static uint8_t* loadImageNeutralWithoutChannel(const std::string& imgPath, GLsizei* width, GLsizei* height)
+		{
+			return stbi_load(imgPath.c_str(), width, height, 0, 0);
+		}
 
-		BYTE* pixels = FreeImage_GetBits(dib);
-		*width = FreeImage_GetWidth(dib);
-		*height = FreeImage_GetHeight(dib);
-		unsigned bytespp = FreeImage_GetLine(dib) / *width; // FreeImage_GetLine() - returns the width of the bitmap in bytes
-		*channels = bytespp / sizeof(pixels[0]);
-		int32_t bits= FreeImage_GetBPP(dib); // returns bits so need to be divided by 8
-
-		int32_t size = *width * *height * (bits / 8);
-		BYTE* result = new BYTE[size];
-
-		memcpy(result, pixels, size);
-
-		if ((result == 0))
-			return nullptr;
-
-		FreeImage_Unload(dib);
-		return result;
-	}
+		static void deleteData(uint8_t* data)
+		{
+			stbi_image_free(data);
+		}
+	};
 }

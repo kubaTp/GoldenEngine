@@ -1,54 +1,60 @@
 #include "texture.h"
 
-namespace golden {
-	namespace graphics {
-		Texture::Texture(const std::string& imagePath) : m_ImgPath(imagePath)
-		{
-			m_TextureID = load();
-		}
+#include "../utils/imageloader.h"
+#include "../utils/assert.h"
 
-		Texture::~Texture()
-		{
-			// TODO : add FreeImage_Unload(dib) -> look if it is not deleting pixels too!
-		}
+namespace golden { namespace graphics {
 
-		GLuint Texture::load()
-		{
-			uint8_t channels;
-			BYTE* pixels = load_image(m_ImgPath.c_str(), &m_Width, &m_Height, &channels);
-			GLenum internalFormat = GL_RGB8, dataFormat = GL_BGR;
+    Texture::Texture(const std::string& imagePath) : m_ImgPath(imagePath)
+    {
+        int channels;
+        uint8_t* pixels = golden::ImageLoader::loadImage(m_ImgPath, &m_Width, &m_Height, channels);
 
-			if (channels == 4)
-			{
-				internalFormat = GL_RGBA8;
-				dataFormat = GL_BGRA;
-			}
+        #pragma region PIXELS_LOGGING
+    #if 0       /// logging all pixels read from image
+            for (int i = 0; i < m_Width * m_Height; i += 3)
+                std::cout << " pixel - " << static_cast<int>(pixels[i]) << ", " << static_cast<int>(pixels[i + 1]) << ", " << static_cast<int>(pixels[i + 2]) << std::endl;
+    #endif
+    #pragma endregion
+      
+        GE_ASSERT(pixels == nullptr, "Golden Engine error: failed to load image at path " + m_ImgPath);
 
-			GLuint result; // result which will be returning by this function, TID
-			glGenTextures(1, &result);
-			glBindTexture(GL_TEXTURE_2D, result);
+        GLenum internalFormat = GL_RGB, dataFormat = GL_RGB;
 
-			//setting parameters of opengl texture
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // when minimized setting nearest not linear, "crisp edges" effect
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // when maximized
+        if (channels == 4)
+        {
+            internalFormat = GL_RGBA;
+            dataFormat = GL_RGBA;
+        }
 
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, pixels);
+        glGenTextures(1, &m_TextureID);
+        glBindTexture(GL_TEXTURE_2D, m_TextureID);
 
-			glBindTexture(GL_TEXTURE_2D, 0);
+        //setting parameters of opengl texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // when minimized setting nearest not linear, "crisp edges" effect
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // when maximized
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-			delete[] pixels;
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, pixels);
 
-			return result;
-		}
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-		void Texture::bind() const
-		{
-			glBindTexture(GL_TEXTURE_2D, m_TextureID);
-		}
+        ImageLoader::deleteData(pixels);
+    }
 
-		void Texture::unbind() const
-		{
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
-	}
-}
+    Texture::~Texture()
+    {
+        // TODO : add FreeImage_Unload(dib) -> look if it is not deleting pixels too!
+    }
+
+    void Texture::bind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, m_TextureID);
+    }
+
+    void Texture::unbind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}}

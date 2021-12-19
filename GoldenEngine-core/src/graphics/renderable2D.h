@@ -11,7 +11,9 @@
 
 #include "texture.h"
 
-namespace golden { namespace graphics {
+#include "../components/components_pack.h"
+
+namespace golden { class Chief; namespace graphics {
 
 	struct VertexData // struct represents one of 4 vertex in one sprite
 	{
@@ -24,34 +26,20 @@ namespace golden { namespace graphics {
 
 	class Renderable2D
 	{
+	private:
+		friend class Chief;
+
 	protected:
-		Renderable2D() : m_Texture(nullptr) { setDefaultOfUV(); } // set default texture coords
+		Renderable2D(); // default contructor
 		 
 	public:
-		Renderable2D(maths::Vec3 position, maths::Vec2 size, uint32_t color) 
-			: m_Position(position), m_Size(size), m_Color(color), m_Texture(nullptr)
-		{ setDefaultOfUV(); }
+		Renderable2D(maths::Vec3 position, maths::Vec2 size, uint32_t color);
+		Renderable2D(maths::Vec3 position, maths::Vec2 size, const maths::Vec4& color);
+		virtual ~Renderable2D();
 
-		Renderable2D(maths::Vec3 position, maths::Vec2 size, const maths::Vec4& color)
-			: m_Position(position), m_Size(size), m_Color(convertColor(color)) 
-		{ setDefaultOfUV(); }
-
-		virtual ~Renderable2D() { }
-
-		virtual void submit(Renderer2D* renderer) const { renderer->submit(this); } // reversing : submiting sprite to renderer but in different query
+		virtual void submit(Renderer2D* renderer) const; // reversing : submiting sprite to renderer but in different query
 		
-		uint32_t convertColor(const maths::Vec4& vec)
-		{
-			// color is from 0 to 1 in float
-			uint8_t r = vec.x * 255.0f;
-			uint8_t g = vec.y * 255.0f;
-			uint8_t b = vec.z * 255.0f;
-			uint8_t a = vec.w * 255.0f;
-
-			uint32_t color = a << 24 | b << 16 | g << 8 | r; // push alfa to the first byte, push b to second byte, push g to third byte, push r to fourth 
-			return color;
-		}
-
+		uint32_t convertColor(const maths::Vec4& vec); // change location of this function
 
 		// GETTERS
 		inline const maths::Vec3& getPosition() const { return m_Position; }
@@ -59,11 +47,14 @@ namespace golden { namespace graphics {
 		inline const uint32_t& getColor() const { return m_Color; }
 		inline const std::vector<maths::Vec2>& getUV() const { return m_UV; }
 		inline const GLuint getTID() const { return m_Texture ? m_Texture->getTextureID() : 0; }
+		ecs::Component* getComponent(std::string name) const;
 
 		// SETTERS
-		void setColor(uint32_t color) { m_Color = color; }
-		void setColor(const maths::Vec4& color) { m_Color = convertColor(color); }
+		inline void setColor(uint32_t color) { m_Color = color; }
+		inline void setColor(const maths::Vec4& color) { m_Color = convertColor(color); }
 		inline void setPosition(const maths::Vec3* newPos) { m_Position = *newPos; }
+
+		inline void printSizeOfCompsArray() const { std::cout << "size of comps array is " << m_Components.size() << std::endl; }
 
 	protected:
 		maths::Vec3 m_Position; // position given
@@ -71,7 +62,9 @@ namespace golden { namespace graphics {
 		uint32_t m_Color; // color of renderable
 		std::vector<maths::Vec2> m_UV; // texture coords
 
-		Texture* m_Texture; // pointer to texture, because everyone renderable has "own" texture
+		Texture* m_Texture; // everyone renderable has "own" texture
+
+		std::vector<ecs::Component*> m_Components; // dynamic array of components
 
 	private:
 		void setDefaultOfUV() // submit default uv's to the m_UV vector

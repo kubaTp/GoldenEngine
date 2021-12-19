@@ -1,6 +1,7 @@
 #include "vec4.h"
 
 namespace golden { namespace maths {
+
 	Vec4::Vec4(const float& x, const float& y, const float& z, const float& w)
 	{
 		this->x = x;
