@@ -2,7 +2,7 @@
 
 #include "component.h"
 
-// component with onStart and onUpdate function
+// component with onStart and onUpdate functions
 
 namespace golden { namespace ecs {
 

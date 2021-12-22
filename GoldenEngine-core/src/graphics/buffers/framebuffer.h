@@ -23,9 +23,9 @@ namespace golden { namespace graphics {
 		void Bind();
 		void Unbind();
 
-		const FramebufferSpecification& getSpecification() { return m_Specification; }
-		const uint32_t& getColorAttachment() { return m_ColorAttachment; }
-		const uint32_t& getBuffer() { return m_BufferID; }
+		inline const FramebufferSpecification& getSpecification() { return m_Specification; }
+		inline const uint32_t& getColorAttachment() { return m_ColorAttachment; }
+		inline const uint32_t& getBuffer() { return m_BufferID; }  
 
 	private:
 		uint32_t m_BufferID; // framebuffer

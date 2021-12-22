@@ -10,6 +10,8 @@
 #include "../graphics/layers/layer.h"
 #include "../graphics/buffers/framebuffer.h"
 
+#include "../graphics/scene.h"
+
 namespace golden {
 
 	class Chief
@@ -30,6 +32,16 @@ namespace golden {
 		static void render(std::string name); // render just one layer by given key
 
 		static bool firstFrame() { return m_FirstFrame; }
+
+		static void insertScene(graphics::Scene* scene) 
+		{ 
+			m_Layers = scene->getLayers();
+		}
+
+		static void drawScene()
+		{
+			render();
+		}
 
 	private:
 		static void render_layer(graphics::Layer* layer); // private render method for one layer

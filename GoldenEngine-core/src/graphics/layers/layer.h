@@ -2,6 +2,8 @@
 
 #include "../renderer2D.h"
 #include "../renderable2D.h"
+#include ".../../../../base.h"
+#include "../../utils/resourceloader.h"
 
 namespace golden { class Chief;  namespace graphics {
 

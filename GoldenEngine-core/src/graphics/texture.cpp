@@ -17,7 +17,7 @@ namespace golden { namespace graphics {
     #endif
     #pragma endregion
       
-        GE_ASSERT(pixels == nullptr, "Golden Engine error: failed to load image at path " + m_ImgPath);
+        GE_ASSERT(pixels == nullptr, "failed to load image at path " + m_ImgPath);
 
         GLenum internalFormat = GL_RGB, dataFormat = GL_RGB;
 

@@ -6,6 +6,7 @@
 
 #include "../maths/maths.h"
 #include "../utils/fileutils.h"
+#include "../../extLibs/json_struct/json_struct.h"
 
 namespace golden { namespace graphics {
 
@@ -30,12 +31,28 @@ namespace golden { namespace graphics {
 		void enable() const;
 		void disabled() const;
 
+		inline const std::string& getVertPath() const { return m_VertPath; }
+		inline const std::string& getFragPath() const { return m_FragPath; }
+
 	private:
 		GLuint load();
 		GLuint getUniformLocation(const GLchar* name);
 
 	private:
 		uint32_t m_ShaderID;
-		const char* m_VertPath, * m_FragPath;
+		std::string m_VertPath, m_FragPath;
+	};
+
+	struct ShaderSpec
+	{
+		std::string name, vertPath, fragPath;
+
+		Shader& convertToShader() const 
+		{
+			Shader *shader = new Shader(vertPath, fragPath);
+			return *shader;
+		}
+
+		JS_OBJECT(JS_MEMBER(name), JS_MEMBER(vertPath), JS_MEMBER(fragPath));
 	};
 }}

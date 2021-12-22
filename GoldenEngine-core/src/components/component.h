@@ -7,7 +7,7 @@ namespace golden { class Chief; namespace ecs {
 	class Component 
 	{
 	public:
-		inline const std::string& getName() const { return m_Name; }
+		virtual inline const std::string getName() const { return m_Name; }
 
 		virtual void setOnStartFunction(void(*OnStartFunction)()) { }
 		virtual void setOnUpdateFunction(void(*OnUpdateFunction)()) { }
@@ -19,12 +19,10 @@ namespace golden { class Chief; namespace ecs {
 		friend class Chief;
 
 	public:
-		Component(std::string name) { m_Name = name;  }
-
-	public:
+		Component(std::string name) { m_Name = name; }
 		Component() { }
 
-	private:
+	protected:
 		std::string m_Name;
 	};
 }}

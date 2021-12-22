@@ -3,7 +3,7 @@
 namespace golden {  namespace graphics {
 
 	Shader::Shader(const char* vertPath, const char* fragPath) : m_VertPath(vertPath), m_FragPath(fragPath) { m_ShaderID = load(); }
-	Shader::Shader(std::string vertPath, std::string fragPath) : m_VertPath(vertPath.c_str()), m_FragPath(fragPath.c_str()) { m_ShaderID = load(); }
+	Shader::Shader(std::string vertPath, std::string fragPath) : m_VertPath(vertPath), m_FragPath(fragPath) { m_ShaderID = load(); }
 
 	Shader::~Shader() { glDeleteProgram(m_ShaderID); }
 
@@ -13,8 +13,8 @@ namespace golden {  namespace graphics {
 		GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 		GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
-		std::string vertSourceString = read_file(m_VertPath);
-		std::string fragSourceString = read_file(m_FragPath);
+		std::string vertSourceString = FileManager::read_file(m_VertPath.c_str());
+		std::string fragSourceString = FileManager::read_file(m_FragPath.c_str());
 
 		const char* vertSource = vertSourceString.c_str();
 		const char* fragSource = fragSourceString.c_str();
@@ -32,15 +32,16 @@ namespace golden {  namespace graphics {
 			glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &length);
 			std::vector<char> error(length);
 			glGetShaderInfoLog(vertex, length, &length, &error[0]);
-			std::cout << "Failed to compilied vertex shader: " << std::endl << &error[0] << std::endl;
+			std::cout << "Failed to compilied vertex shader: " << std::endl << &error[0] << std::endl; // log this one
 			glDeleteShader(vertex);
 
 			return 0;
 		}
+
+		//fragment
 		glShaderSource(fragment, 1, &fragSource, NULL);
 		glCompileShader(fragment);
 
-		//fragment
 		glGetShaderiv(fragment, GL_COMPILE_STATUS, &result);
 
 		if (result == GL_FALSE)
@@ -49,7 +50,7 @@ namespace golden {  namespace graphics {
 			glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &length);
 			std::vector<char> error(length);
 			glGetShaderInfoLog(fragment, length, &length, &error[0]);
-			std::cout << "Failed to compilied fragment shader: " << std::endl << &error[0] << std::endl;
+			std::cout << "Failed to compilied fragment shader: " << std::endl << &error[0] << std::endl; // log this one
 			glDeleteShader(fragment);
 
 			return 0;

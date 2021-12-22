@@ -7,33 +7,23 @@ namespace golden { namespace graphics {
 
 	Window::Window(const char* title, uint16_t width, uint16_t height) : m_Title(title), m_Width(width), m_Height(height)
 	{
-		if (!init())
-			glfwTerminate();
+		init();
 
 		usage::Input::init(m_Timestep);
 	}
 
 	Window::~Window() { glfwTerminate(); }
 
-	bool Window::init()
+	void Window::init()
 	{
 		glfwSetErrorCallback(error_callback); // set error callback before initializing
 
-		if (!glfwInit()) // check initializing of GLFW
-		{
-			std::cout << "FAILED TO INITIALIZED GLFW!" << std::endl;
-			return false;
-		}
+		GE_ASSERT(!glfwInit(), "failed to initialized glfw"); // failed to init glfw
 
 		m_Time = glfwGetTime();
 		m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL); // create new window
 
-		if (!m_Window) // if window has not been created
-		{
-			glfwTerminate();
-			std::cout << "FAILED TO CREATE GLFW WINDOW!" << std::endl;
-			return false;
-		}
+		GE_ASSERT(!m_Window, "failed to create window"); // failed to create glfw window
 			
 		glfwMakeContextCurrent(m_Window); // make context of current window called m_Window
 		glfwSetWindowUserPointer(m_Window, this); // set pointer to current window to set all callback properly
@@ -43,14 +33,9 @@ namespace golden { namespace graphics {
 		glfwSetCursorPosCallback(m_Window, usage::cursor_position_callback); // set cursor callback
 		glfwSwapInterval(0); // turn off v-sync
 
-		if (glewInit() != GLEW_OK) // check GLEW
-		{
-			std::cout << "GLEW COULD NOT BE INITIALIZED!" << std::endl;
-			return false;
-		}
+		GE_ASSERT(glewInit() != GLEW_OK, "glew could not be intiliazed"); // check glew
 
-		// make context for imgui
-		IMGUI_CHECKVERSION();
+		IMGUI_CHECKVERSION(); // make context for imgui
 		//glClipControl(GL_UPPER_LEFT, GL_NEGATIVE_ONE_TO_ONE);
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); 
@@ -69,8 +54,6 @@ namespace golden { namespace graphics {
 		GE_ASSERT(m_Icon.pixels == nullptr, "Golden Engine error : failed to load image at path " + ResourceLoader::findFile("img/transparent.png"));
 		glfwSetWindowIcon(m_Window, 1, &m_Icon);
 		ImageLoader::deleteData(m_Icon.pixels);
-
-		return true;
 	}
 
 	void Window::clear() const { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
@@ -78,7 +61,7 @@ namespace golden { namespace graphics {
 	void Window::update()
 	{
 		GLenum error = glGetError();
-		GE_ASSERT_OPENGL_WARNING(error != GL_NO_ERROR, "GE OpenGL Error : ", error);
+		GE_ASSERT_OPENGL_WARNING(error != GL_NO_ERROR, "OpenGL Error : ", error);
 
 		usage::Input::update();
 
@@ -106,7 +89,7 @@ namespace golden { namespace graphics {
 	void Window::setWindowIcon(const std::string& imagePath)
 	{
 		m_Icon.pixels = ImageLoader::loadImageNeutralWithoutChannel(imagePath, &m_Icon.width, &m_Icon.height); // change this to project path
-		GE_ASSERT(m_Icon.pixels == nullptr, "Golden Engine error : failed to load image at path " + imagePath);
+		GE_ASSERT(m_Icon.pixels == nullptr, "failed to load image at path " + imagePath);
 		glfwSetWindowIcon(m_Window, 1, &m_Icon);
 		ImageLoader::deleteData(m_Icon.pixels);
 	}
@@ -122,7 +105,6 @@ namespace golden { namespace graphics {
 
 	void error_callback(int error, const char* description)
 	{
-		//std::cout << "Error: " << description << std::endl;
 		Logger::logWarning(description);
 	}
 }}

@@ -171,8 +171,8 @@ namespace golden { namespace graphics {
 		}
 
 		// TODO : setup to works with universal values
-		float scalex = 960.0f / 32.0f;
-		float scaley = 550.0f / 16.0f;
+		float scalex = 2000.0f / 32.0f;
+		float scaley = 1200.0f / 16.0f;
 
 		float x = position.x;
 

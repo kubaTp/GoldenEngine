@@ -31,6 +31,7 @@ namespace golden {
 	{
 		m_Layers.insert(std::pair<std::string, graphics::Layer*>(name, layer));
 	}
+
 	void Chief::removeLayer(std::string name)
 	{
 		m_Layers.erase(m_Layers.find(name));

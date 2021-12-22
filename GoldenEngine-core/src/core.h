@@ -2,6 +2,8 @@
 
 #include "utils/timer.h" // needs to be attached first to avoid errrors with windows.h
 #include "utils/fileutils.h"
+#include "utils/serializationservice.h"
+
 #include "utils/resourceloader.h"
 #include "usage/chief.h"
 
@@ -26,7 +28,7 @@
 
 #ifdef PREDEFINED_MACROS
 
-using rs = golden::ResourceLoader; // it's not reference to RobertRS7
+using rs = golden::ResourceLoader; // it's not a reference to RobertRS7
 using lg = golden::Logger;
 #define endl '\n'
 

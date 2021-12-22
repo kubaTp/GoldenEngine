@@ -1,5 +1,6 @@
 #define PREDEFINED_MACROS
 #include "src/core.h"
+#include "src/graphics/scene.h"
 
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
@@ -8,8 +9,11 @@
 
 #define GE_EDITOR 0
 // projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
+
 // TODO : scene abstraction ( framebuffer in chief )
 // TODO : implement ECS
+// TODO : add serializing scene into a .json file
+
 
 void CustomStartMethod()
 {
@@ -34,13 +38,15 @@ int main()
 	srand(time(NULL));
 
 	rs::setResourcePath("D:/Code/Games Engine/practice/GoldenEngine/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/practice/GoldenEngine/");
+	Scene mainscene("main_scane");
 
 	SoundManager::add(new Sound("guitar", rs::findFile("music/guitar.wav"), true));
 	SoundManager::add(new Sound("barbarian", rs::findFile("music/barbarian.wav"), true));
 	SoundManager::add(new Sound("buttonclick", rs::findFile("music/buttonclick.mp3")));
 	SoundManager::add(new Sound("menu", rs::findFile("music/menumusic.mp3")));
 
-	Window window("Golden Engine", 960.0f, 540.0f);
+	Window window("Golden Engine", 1200.0f, 730.0f);
 	window.clear();
 
 	Chief::init(new BatchRenderer2D());
@@ -49,6 +55,9 @@ int main()
 	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
 	Shader font_shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
 
+	//SerializationService::serialize(&shader, "mainShader");
+	//SerializationService::deserialize(&shader, "mainShader");
+
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
@@ -56,10 +65,11 @@ int main()
 	TileLayer background_layer(shader_lighting);
 	TileLayer uiLayer(font_shader);
 
-	Chief::addLayer("layer", &layer);
-	Chief::addLayer("uiLayer", &uiLayer);
-	Chief::addLayer("bg_layer", &background_layer);
+	mainscene.addLayer("layer", &layer);
+	mainscene.addLayer("uiLayer", &uiLayer);
+	mainscene.addLayer("bg_layer", &background_layer);
 
+	Chief::insertScene(&mainscene);
 	Chief::descLayers();
 
 	Texture textures[] =
@@ -69,6 +79,11 @@ int main()
 		Texture(rs::findFile("img/player_01.png")),
 		Texture(rs::findFile("img/sky.png"))
 	};
+
+	//SerializationService::serialize(&textures[0], "texture0");
+	//SerializationService::deserialize(&textures[0], "texture0");
+	//deserialize(&textures[0], "texture0");
+	//SerializationService::clearDataFolder();
 
 	#pragma region SPRITE_SUBMITING
 #if 0
@@ -105,7 +120,7 @@ int main()
 		layer.add(new Sprite(7.0f, -2, 4, 4, Vec4(1, 1, 1, 1)));
 	#endif
 
-	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 21));
+	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
 	FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 29));
 	FontManager::add(new Font(FontType::SourceSerifPro, rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
 
@@ -139,9 +154,17 @@ int main()
 
 	//transparentSprite->setStart(&CustomStartMethod);
 	transparentSprite->getComponent("BehaviourComponent")->setOnStartFunction(&CustomStartMethod);
-	transparentSprite->getComponent("BehaviourComponent")->setOnUpdateFunction(&CustomUpdateMethod);
+	//transparentSprite->getComponent("BehaviourComponent")->setOnUpdateFunction(&CustomUpdateMethod);
 
+	//SerializationService::serialize(transparentSprite->getComponent("BehaviourComponent"), "transparentSprite");
 	//transparentSprite->setUpdate(&CustomUpdateMethod);
+
+#if 0
+	HWND myConsole = GetConsoleWindow();
+	ShowWindow(myConsole, 0);
+
+	ShowWindow(myConsole, 1);
+#endif
 
 	/*--- GAME LOOP ---*/
 	while (!window.closed())
@@ -221,7 +244,8 @@ int main()
 #endif
 	#pragma endregion
 
-		Chief::render();
+		//Chief::render();
+		Chief::drawScene();
 		//Chief::render("layer");
 
 #if GE_EDITOR

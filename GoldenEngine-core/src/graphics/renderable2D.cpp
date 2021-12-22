@@ -44,9 +44,6 @@ namespace golden { namespace graphics {
 	ecs::Component* Renderable2D::getComponent(std::string name) const
 	{
 		if (m_Components.size() > 0)
-			return new ecs::Component;
-
-		else
 		{
 			for (ecs::Component* comp : m_Components)
 			{
@@ -55,6 +52,10 @@ namespace golden { namespace graphics {
 					return comp;
 				}
 			}
+		}
+		else
+		{
+			return new ecs::Component;
 		}
 	}
 }}

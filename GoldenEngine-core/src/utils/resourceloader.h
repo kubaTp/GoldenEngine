@@ -14,8 +14,11 @@ namespace golden {
 
 	public:
 		static void setResourcePath(std::string respaths);
+		static void setProjectPath(std::string prjpath);
+
 		static std::string getResourcePath() { return m_ResPath; }
 		static std::string getResourcePath_abs() { return absPath(m_ResPath); }
+		static std::string getProjectPath() { return m_PrjPath; }
 
 		static std::string findFile(std::string filepath);	
 		static std::string getCWD() { return std::filesystem::current_path().u8string(); }
@@ -30,5 +33,6 @@ namespace golden {
 		}
 
 		static std::string m_ResPath;
+		static std::string m_PrjPath;
 	};
 }

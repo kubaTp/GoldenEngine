@@ -48,7 +48,7 @@ namespace golden { namespace graphics {
 
 		friend class usage::Input;
 	private:
-		bool init();
+		void init();
 
 		friend static void window_resize(GLFWwindow* window, int width, int height);
 		friend static void error_callback(int error, const char* description);
