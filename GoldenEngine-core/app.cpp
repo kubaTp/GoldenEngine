@@ -14,17 +14,18 @@
 // TODO : implement ECS
 // TODO : add serializing scene into a .json file
 
-
-void CustomStartMethod()
+class MyComponent : public golden::ecs::Component
 {
-	golden::Logger::logInfo("Custom start method behaviour");
-	//exit(0);
-}
+	void OnStart() override
+	{		
+		std::cout << "ON START" << endl;
+	}
 
-void CustomUpdateMethod()
-{
-	golden::Logger::logInfo("Custom update method behaviour");
-}
+	void OnUpdate() override
+	{
+		//std::cout << "ON UPDATE" << endl;
+	}
+};
 
 #if 1
 int main()
@@ -37,10 +38,10 @@ int main()
 	system("CLS");
 	srand(time(NULL));
 
-	rs::setResourcePath("D:/Code/Games Engine/practice/GoldenEngine/assets/");
-	rs::setProjectPath("D:/Code/Games Engine/practice/GoldenEngine/");
-	Scene mainscene("main_scane");
+	rs::setResourcePath("D:/Code/Games Engine/GoldenEngineCopy/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/GoldenEngineCopy/");
 
+	Scene mainscene("main_scane");
 	SoundManager::add(new Sound("guitar", rs::findFile("music/guitar.wav"), true));
 	SoundManager::add(new Sound("barbarian", rs::findFile("music/barbarian.wav"), true));
 	SoundManager::add(new Sound("buttonclick", rs::findFile("music/buttonclick.mp3")));
@@ -54,9 +55,6 @@ int main()
 	Shader shader_lighting(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
 	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
 	Shader font_shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
-
-	//SerializationService::serialize(&shader, "mainShader");
-	//SerializationService::deserialize(&shader, "mainShader");
 
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
@@ -79,11 +77,6 @@ int main()
 		Texture(rs::findFile("img/player_01.png")),
 		Texture(rs::findFile("img/sky.png"))
 	};
-
-	//SerializationService::serialize(&textures[0], "texture0");
-	//SerializationService::deserialize(&textures[0], "texture0");
-	//deserialize(&textures[0], "texture0");
-	//SerializationService::clearDataFolder();
 
 	#pragma region SPRITE_SUBMITING
 #if 0
@@ -114,6 +107,28 @@ int main()
 
 	Sprite* transparentSprite = new Sprite(-3, -3, 3, 3, &textures[2]);
 	layer.add(transparentSprite); // transparent one sprite
+
+	transparentSprite->addComponent<MyComponent>(); // adding component
+
+
+#if 1
+	if (transparentSprite->hasComponent<ecs::TransformComponent>())
+	{
+		std::cout << "has the component" << endl;
+		std::shared_ptr<ecs::TransformComponent> transform = transparentSprite->getComponent<ecs::TransformComponent>();
+		std::cout << "pos is " << transparentSprite->getComponent<ecs::TransformComponent>()->position << endl;
+	}
+	else
+	{
+		std::cout << "does not has the component" << endl;
+	}
+#endif
+
+	#pragma region SERIALIZATION_TEST
+
+	//SerializationService::serialize(transparentSprite, "player");
+
+	#pragma endregion
 
 	#if 0
 		layer.add(new Sprite(2.5f, -2, 4, 4, &textures[0])); // 24 bit one sprite
@@ -146,18 +161,10 @@ int main()
 	double x, y;
 	
 	Mat4 rotationMatrix = Mat4::idenity();
-	//Mat4 translationMatrix = Mat4::idenity();
 
 	SoundManager::changeVolume(0.3f);
 	float deltaTime = 0.0f, volume = SoundManager::getVolume();
 	Vec3 newPos;
-
-	//transparentSprite->setStart(&CustomStartMethod);
-	transparentSprite->getComponent("BehaviourComponent")->setOnStartFunction(&CustomStartMethod);
-	//transparentSprite->getComponent("BehaviourComponent")->setOnUpdateFunction(&CustomUpdateMethod);
-
-	//SerializationService::serialize(transparentSprite->getComponent("BehaviourComponent"), "transparentSprite");
-	//transparentSprite->setUpdate(&CustomUpdateMethod);
 
 #if 0
 	HWND myConsole = GetConsoleWindow();
@@ -191,7 +198,7 @@ int main()
 		{	
 			SoundManager::changeVolume(0.6f);
 			SoundManager::play("menu");
-			//SoundManager::muteAudio();
+			SoundManager::muteAudio();
 			firstFrame = false;
 		}
 
@@ -223,7 +230,7 @@ int main()
 		//shader_lighting.disabled();
 
 		newPos = Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
-		transparentSprite->setPosition(&newPos);
+		transparentSprite->getComponent<ecs::TransformComponent>()->position = newPos;
 
 		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1));
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));

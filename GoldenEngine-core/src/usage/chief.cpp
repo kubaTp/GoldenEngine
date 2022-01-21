@@ -80,11 +80,18 @@ namespace golden {
 		{			
 			if (m_FirstFrame)
 			{
-				renderable->getComponent("BehaviourComponent")->InvokeOnStartFunction();
+				for (std::shared_ptr<ecs::Component> comp : renderable->getComponents())
+				{
+					//std::string targetName = typeid(comp).name();
+					comp->InvokeOnStartFunction();
+				}
 			}
 			else
 			{
-				renderable->getComponent("BehaviourComponent")->InvokeOnUpdateFunction();
+				for (std::shared_ptr<ecs::Component> comp : renderable->getComponents())
+				{
+					//comp->InvokeOnUpdateFunction();
+				}
 			}
 
 			renderable->submit(m_Renderer2D);

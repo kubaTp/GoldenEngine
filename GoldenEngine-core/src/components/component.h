@@ -1,28 +1,31 @@
 #pragma once
-#include <string>
+
+#include "component.h"
 #include <iostream>
 
-namespace golden { class Chief; namespace ecs {
-	
-	class Component 
+namespace golden { namespace ecs {
+
+	enum ComponentsType
 	{
-	public:
-		virtual inline const std::string getName() const { return m_Name; }
+		OTHER = 0, // created by game designer
+		TAG_COMPONENT = 1, // holds tag
+		TRANSFORM_COMPONENT = 2, // holds transform
+	};
 
-		virtual void setOnStartFunction(void(*OnStartFunction)()) { }
-		virtual void setOnUpdateFunction(void(*OnUpdateFunction)()) { }
-
-	private:
-		virtual void InvokeOnStartFunction() const { }
-		virtual void InvokeOnUpdateFunction() const { }
-
-		friend class Chief;
+	class Component {
 
 	public:
-		Component(std::string name) { m_Name = name; }
-		Component() { }
+		Component() { compType = ComponentsType::OTHER; }
 
 	protected:
-		std::string m_Name;
+		virtual void OnStart() { }
+		virtual void OnUpdate() { }
+
+	public:
+		void InvokeOnStartFunction() { OnStart(); }
+		void InvokeOnUpdateFunction() { OnUpdate(); }
+
+	public:
+		ComponentsType compType;
 	};
 }}

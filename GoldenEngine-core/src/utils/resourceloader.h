@@ -19,10 +19,11 @@ namespace golden {
 		static std::string getResourcePath() { return m_ResPath; }
 		static std::string getResourcePath_abs() { return absPath(m_ResPath); }
 		static std::string getProjectPath() { return m_PrjPath; }
-
-		static std::string findFile(std::string filepath);	
+		static std::string getSerializedDataPath();
 		static std::string getCWD() { return std::filesystem::current_path().u8string(); }
 
+		static std::string findFile(std::string filepath);	
+		
 	private:
 		static std::string absPath(std::string& path)
 		{

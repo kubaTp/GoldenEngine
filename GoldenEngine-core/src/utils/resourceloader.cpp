@@ -19,4 +19,9 @@ namespace golden {
 	{
 		return m_ResPath + filepath;
 	}
+
+	std::string ResourceLoader::getSerializedDataPath()
+	{
+		return getProjectPath() + "projectData/serialized/";
+	}
 }

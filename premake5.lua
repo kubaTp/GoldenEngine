@@ -89,7 +89,11 @@ project "GoldenEngine-core"
 			--golden engine files
 			"%{prj.name}/src/base.h",
 			"%{prj.name}/src/core.h",
-			"%{prj.name}/src/gebase.h"
+			"%{prj.name}/src/gebase.h",
+
+			--yaml-cpp
+			"%{prj.name}/extLibs/yaml-cpp/include/**.h",			
+			"%{prj.name}/extLibs/yaml-cpp/src/*.cpp",
 		 }
 
 	includedirs {
@@ -97,7 +101,8 @@ project "GoldenEngine-core"
 		"%{wks.location}/Dependencies/GLFW/include",
 		"%{wks.location}/Dependencies/irrklang/include",
 		"%{wks.location}/%{prj.name}/extLibs/freetype/include",
-		"%{wks.location}/%{prj.name}/extLibs/freetype/include/**"
+		"%{wks.location}/%{prj.name}/extLibs/freetype/include/**",
+		"%{wks.location}/%{prj.name}/extLibs/yaml-cpp/include",
 	}
 
 	--add libraries path
@@ -122,7 +127,8 @@ project "GoldenEngine-core"
 		"_CRT_SECURE_NO_DEPRECATE",
 		"GLEW_STATIC",
 		"_CONSOLE",
-		"FT2_BUILD_LIBRARY"
+		"FT2_BUILD_LIBRARY",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "configurations:Debug"

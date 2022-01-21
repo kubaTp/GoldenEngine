@@ -9,7 +9,6 @@ namespace golden { namespace graphics {
 	{
 	public:
 		std::string content;
-		maths::Vec3 position;
 		Font* m_Font;
 
 	public:

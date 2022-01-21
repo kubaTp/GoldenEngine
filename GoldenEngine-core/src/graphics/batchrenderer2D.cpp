@@ -69,7 +69,8 @@ namespace golden { namespace graphics {
 	void BatchRenderer2D::submit(const Renderable2D* renderable)
 	{
 		const maths::Vec2& size = renderable->getSize();
-		const maths::Vec3& position = renderable->getPosition();
+		//const maths::Vec3& position = renderable->getPosition();
+		const maths::Vec3& position = renderable->getComponent<ecs::TransformComponent>()->position;
 		const uint32_t color = renderable->getColor();
 		//const uint32_t color = 0xffffffff;
 		const std::vector<maths::Vec2>& uv = renderable->getUV();

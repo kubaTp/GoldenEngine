@@ -17,6 +17,8 @@ namespace golden { namespace maths {
 		Vec3& multiply(const Vec3& other);
 		Vec3& devide(const Vec3& other);
 
+
+
 		friend Vec3& operator+(Vec3 left, const Vec3& right);
 		friend Vec3& operator-(Vec3 left, const Vec3& right);
 		friend Vec3& operator*(Vec3 left, const Vec3& right);

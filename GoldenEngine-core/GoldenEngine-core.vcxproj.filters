@@ -91,6 +91,27 @@
     <Filter Include="extLibs\stb-image">
       <UniqueIdentifier>{28F56CEF-940B-6B85-DD82-F6A649D83B0D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="extLibs\yaml-cpp">
+      <UniqueIdentifier>{B21A64B2-9E13-8304-C745-6889B39D6210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\include">
+      <UniqueIdentifier>{25D4F172-11F9-40F3-3A44-268326C83F11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\include\yaml-cpp">
+      <UniqueIdentifier>{77B48DE6-E322-E365-2C0C-9E6598B9D801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\include\yaml-cpp\contrib">
+      <UniqueIdentifier>{7783AAF8-E39D-0D9A-2CC0-1D2E981935A1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\include\yaml-cpp\node">
+      <UniqueIdentifier>{ACCD6400-981F-3CF0-813E-79006D2F55D9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail">
+      <UniqueIdentifier>{EE2B31AE-5A9C-3327-23BB-ADAF8FEA6B28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extLibs\yaml-cpp\src">
+      <UniqueIdentifier>{C9E19127-B570-1BF1-5E8F-2FEC4AFD2B97}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -193,11 +214,119 @@
     <ClInclude Include="extLibs\stb-image\stb_image.h">
       <Filter>extLibs\stb-image</Filter>
     </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\anchor.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\binary.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\contrib\anchordict.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\contrib\graphbuilder.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\depthguard.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\dll.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\emitfromevents.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\emitter.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\emitterdef.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\emittermanip.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\emitterstyle.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\eventhandler.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\exceptions.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\mark.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\convert.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\impl.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\iterator.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\iterator_fwd.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\memory.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\node.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\node_data.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\node_iterator.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\detail\node_ref.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\emit.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\impl.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\iterator.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\node.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\parse.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\ptr.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\node\type.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\noexcept.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\null.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\ostream_wrapper.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\parser.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\stlemitter.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\traits.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\yaml.h">
+      <Filter>extLibs\yaml-cpp\include\yaml-cpp</Filter>
+    </ClInclude>
     <ClInclude Include="src\base.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\components\behaviourcomponent.h">
-      <Filter>src\components</Filter>
     </ClInclude>
     <ClInclude Include="src\components\component.h">
       <Filter>src\components</Filter>
@@ -244,6 +373,9 @@
     <ClInclude Include="src\graphics\layers\layer.h">
       <Filter>src\graphics\layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\layers\layers_pack.h">
+      <Filter>src\graphics\layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\layers\tilelayer.h">
       <Filter>src\graphics\layers</Filter>
     </ClInclude>
@@ -251,6 +383,9 @@
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\renderer2D.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\scene.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\shader.h">
@@ -301,6 +436,9 @@
     <ClInclude Include="src\usage\input.h">
       <Filter>src\usage</Filter>
     </ClInclude>
+    <ClInclude Include="src\usage\project.h">
+      <Filter>src\usage</Filter>
+    </ClInclude>
     <ClInclude Include="src\utils\assert.h">
       <Filter>src\utils</Filter>
     </ClInclude>
@@ -316,18 +454,17 @@
     <ClInclude Include="src\utils\resourceloader.h">
       <Filter>src\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\serializationservice.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\utils\timer.h">
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\timestep.h">
       <Filter>src\utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\usage\project.h" />
-    <ClInclude Include="src\graphics\scene.h" />
-    <ClInclude Include="src\graphics\layers\layers_pack.h" />
-    <ClInclude Include="extLibs\json_struct\json_struct.h" />
-    <ClInclude Include="extLibs\json_struct\json_struct_diff.h" />
-    <ClInclude Include="src\utils\serializationservice.h" />
+    <ClInclude Include="src\components\tagcomponent.h" />
+    <ClInclude Include="src\components\transformcomponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -484,8 +621,92 @@
     <ClCompile Include="extLibs\stb-image\stb_image.cpp">
       <Filter>extLibs\stb-image</Filter>
     </ClCompile>
-    <ClCompile Include="src\components\behaviourcomponent.cpp">
-      <Filter>src\components</Filter>
+    <ClCompile Include="extLibs\yaml-cpp\src\binary.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\convert.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\depthguard.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\directives.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\emit.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\emitfromevents.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\emitter.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\emitterstate.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\emitterutils.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\exceptions.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\exp.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\memory.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\node.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\node_data.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\nodebuilder.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\nodeevents.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\null.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\ostream_wrapper.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\parse.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\parser.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\regex_yaml.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\scanner.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\scanscalar.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\scantag.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\scantoken.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\simplekey.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\singledocparser.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\stream.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="extLibs\yaml-cpp\src\tag.cpp">
+      <Filter>extLibs\yaml-cpp\src</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\batchrenderer2D.cpp">
       <Filter>src\graphics</Filter>
@@ -521,6 +742,9 @@
       <Filter>src\graphics\layers</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\renderable2D.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\scene.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\shader.cpp">
@@ -565,13 +789,14 @@
     <ClCompile Include="src\usage\input.cpp">
       <Filter>src\usage</Filter>
     </ClCompile>
+    <ClCompile Include="src\usage\project.cpp">
+      <Filter>src\usage</Filter>
+    </ClCompile>
     <ClCompile Include="src\utils\logger.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\resourceloader.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\scene.cpp" />
-    <ClCompile Include="src\usage\project.cpp" />
   </ItemGroup>
 </Project>
