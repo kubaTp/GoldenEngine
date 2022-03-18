@@ -103,6 +103,7 @@ project "GoldenEngine-core"
 		"%{wks.location}/%{prj.name}/extLibs/freetype/include",
 		"%{wks.location}/%{prj.name}/extLibs/freetype/include/**",
 		"%{wks.location}/%{prj.name}/extLibs/yaml-cpp/include",
+		"%{wks.location}/%{prj.name}/extLibs/glm",
 	}
 
 	--add libraries path

@@ -67,12 +67,13 @@ namespace golden { namespace graphics {
 	}
 
 	void BatchRenderer2D::submit(const Renderable2D* renderable)
-	{
-		const maths::Vec2& size = renderable->getSize();
-		//const maths::Vec3& position = renderable->getPosition();
-		const maths::Vec3& position = renderable->getComponent<ecs::TransformComponent>()->position;
-		const uint32_t color = renderable->getColor();
-		//const uint32_t color = 0xffffffff;
+	{		
+		std::shared_ptr<ecs::TransformComponent> transform = renderable->getComponent<ecs::TransformComponent>();
+
+		const maths::Vec2& size = maths::Vec2(transform->scale.x, transform->scale.y);
+		const maths::Vec3& position = transform->position;
+
+		const uint32_t color = renderable->getColor(); //const uint32_t color = 0xffffffff;
 		const std::vector<maths::Vec2>& uv = renderable->getUV();
 		const GLuint tid = renderable->getTID();
 
@@ -109,7 +110,7 @@ namespace golden { namespace graphics {
 		// submit verticies -> look at verticies in staticsprite.cpp
 
 		//0, 0
-
+		
 		m_Buffer->vertex = *m_TransformationStackBack * position;
 		m_Buffer->uv = uv[0];
 		m_Buffer->tid = textureSlot;
@@ -149,7 +150,7 @@ namespace golden { namespace graphics {
 		float textureSlot = 0.0f;
 
 		for (int i = 0; i < m_TextureSlots.size(); i++)
-		{
+		{			
 			if (m_TextureSlots[i] == font.getFTGLAtlas()->id)
 			{
 				textureSlot = (float)(i + 1); // grab index to set-up sampler becasue sampler2d works just chronologic, for example tid 6 can be equal to sampler 2 or 3... ||
@@ -170,8 +171,7 @@ namespace golden { namespace graphics {
 			m_TextureSlots.push_back(font.getFTGLAtlas()->id); // if not push back this tid
 			textureSlot = (float)(m_TextureSlots.size()); // set textureSlot to the last one in m_TextureSlots
 		}
-
-		// TODO : setup to works with universal values
+		
 		float scalex = 2000.0f / 32.0f;
 		float scaley = 1200.0f / 16.0f;
 
@@ -192,10 +192,10 @@ namespace golden { namespace graphics {
 					x += kerning / scalex;
 				}
 
-				float x0 = x + glyph->offset_x / scalex;
+				float x0 = x + glyph->offset_x			/ scalex;
 				float y0 = position.y + glyph->offset_y / scaley;
-				float x1 = x0 + glyph->width / scalex;
-				float y1 = y0 - glyph->height / scaley; // projection matrix has positive top so needs to be substract
+				float x1 = x0 + glyph->width			/ scalex;
+				float y1 = y0 - glyph->height			/ scaley; // projection matrix has positive top so needs to be substract
 
 				float u0 = glyph->s0;
 				float v0 = glyph->t0;

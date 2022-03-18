@@ -20,6 +20,7 @@ namespace golden { namespace graphics {
 			s_sprite->getIBO()->bind();
 		
 			//s_sprite->getShader().setUniformMat4("ml_matrix", maths::Mat4::translation(s_sprite->getPosition()));
+
 			glDrawElements(GL_TRIANGLES, s_sprite->getIBO()->getCount(), GL_UNSIGNED_SHORT, nullptr);
 		
 			s_sprite->getIBO()->unbind();

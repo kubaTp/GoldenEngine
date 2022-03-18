@@ -2,7 +2,7 @@
 
 golden::graphics::Renderer2D* golden::Chief::m_Renderer2D;
 
-std::map<std::string, golden::graphics::Layer*> golden::Chief::m_Layers;
+golden::graphics::Scene* golden::Chief::m_ActiveScene;
 bool golden::Chief::m_Inited = false;
 
 golden::graphics::Framebuffer* golden::Chief::framebuffer;
@@ -27,26 +27,15 @@ namespace golden {
 
 	graphics::Renderer2D* Chief::getRenderer() { return m_Renderer2D; }
 
-	void Chief::addLayer(std::string name, graphics::Layer* layer)
-	{
-		m_Layers.insert(std::pair<std::string, graphics::Layer*>(name, layer));
-	}
-
-	void Chief::removeLayer(std::string name)
-	{
-		m_Layers.erase(m_Layers.find(name));
-	}
-	void Chief::clearLayers()
-	{
-		m_Layers.clear();
-	}
-
 	void Chief::render()
 	{
 		if (m_Inited)
 		{
-			for (auto const& layer : m_Layers)
-				render_layer(layer.second);
+			std::for_each(m_ActiveScene->getLayers().begin(), m_ActiveScene->getLayers().end(),
+				[](std::pair<std::string, golden::graphics::Layer*> layer)
+				{					
+					render_layer(layer.second);
+				});
 		}
 		else
 			Logger::logError("Could not renderer layers because chief has not been inited yet!");
@@ -56,15 +45,21 @@ namespace golden {
 	void Chief::descLayers()
 	{
 		Logger::logInfo("added layers: ");
-		for (auto const& layer : m_Layers)
+		for (const auto& layer : m_ActiveScene->getLayers())
 			Logger::logInfo("name of layer : " + layer.first);
 		
 		Logger::logSpace();
 	}
 
-	void Chief::render(std::string name) // TODO : change name
+	void Chief::render(std::string NameOfLayer) // TODO : render only one layer
 	{
-		render_layer(m_Layers.find(name)->second);
+		for (const auto& layer : m_ActiveScene->getLayers())
+		{
+			if (layer.first == NameOfLayer)
+			{
+				render_layer(layer.second);
+			}
+		}
 
 		m_FirstFrame = false;
 	}
@@ -75,9 +70,16 @@ namespace golden {
 		
 		layer->shaderBinding(true);
 		m_Renderer2D->begin();
+		
+		for (graphics::Renderable2D* renderable : layer->getRenderables())
+		{		
+			if (renderable->hasComponent<ecs::TransformComponent>())
+			{
+				//std::shared_ptr<ecs::TransformComponent> transformComp = renderable->getComponent<ecs::TransformComponent>();
+				//layer->m_Shader.setUniformMat4("ml_matrix", maths::Mat4::rotation(transformComp->rotation.x, 
+					//maths::Vec3(1, 0, 0)) * maths::Mat4::rotation(transformComp->rotation.y, maths::Vec3(0, 1, 0)) * maths::Mat4::rotation(transformComp->rotation.z, maths::Vec3(0, 0, 1)));
+			}
 
-		for (const graphics::Renderable2D* renderable : layer->getRenderables())
-		{			
 			if (m_FirstFrame)
 			{
 				for (std::shared_ptr<ecs::Component> comp : renderable->getComponents())
@@ -90,7 +92,7 @@ namespace golden {
 			{
 				for (std::shared_ptr<ecs::Component> comp : renderable->getComponents())
 				{
-					//comp->InvokeOnUpdateFunction();
+					comp->InvokeOnUpdateFunction();
 				}
 			}
 

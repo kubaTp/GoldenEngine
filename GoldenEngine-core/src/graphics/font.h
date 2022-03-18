@@ -16,13 +16,15 @@ namespace golden { namespace graphics {
 		Font(FontType font, const std::string& filename, uint16_t size);
 		Font(const std::string& filename, uint16_t size);
 
-		inline ftgl::texture_atlas_t* getFTGLAtlas() const { return m_FTatlas; }
-		inline ftgl::texture_font_t* getFTGLFont() const { return m_FTfont; }
-		inline const FontType getFont() const { return m_Font; }
-		inline const std::string& getFileName() const { return m_Filename; }
-		inline const uint16_t& getSize() const { return m_Size; }
+		inline ftgl::texture_atlas_t* getFTGLAtlas() const  { return m_FTatlas;  }
+		inline ftgl::texture_font_t* getFTGLFont() const	{ return m_FTfont;   }
+
+		inline const FontType getFont() const				{ return m_Font;     }
+		inline const std::string& getFileName() const		{ return m_Filename; }
+		inline const uint16_t& getSize() const				{ return m_Size;	 }
 
 		friend static class FontManager;
+
 	private:
 		FontType m_Font;
 		std::string m_Filename;

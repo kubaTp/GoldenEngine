@@ -45,7 +45,7 @@ namespace golden { namespace graphics {
 
     Texture::~Texture()
     {
-        // TODO : add FreeImage_Unload(dib) -> look if it is not deleting pixels too!
+
     }
 
     void Texture::bind() const

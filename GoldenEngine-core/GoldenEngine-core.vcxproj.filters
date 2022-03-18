@@ -141,7 +141,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core.h" />
     <ClInclude Include="extLibs\freetype-gl\common.h">
       <Filter>extLibs\freetype-gl</Filter>
     </ClInclude>
@@ -212,6 +211,9 @@
       <Filter>extLibs\imgui</Filter>
     </ClInclude>
     <ClInclude Include="extLibs\stb-image\stb_image.h">
+      <Filter>extLibs\stb-image</Filter>
+    </ClInclude>
+    <ClInclude Include="extLibs\stb-image\stb_image_write.h">
       <Filter>extLibs\stb-image</Filter>
     </ClInclude>
     <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\anchor.h">
@@ -334,6 +336,12 @@
     <ClInclude Include="src\components\components_pack.h">
       <Filter>src\components</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\tagcomponent.h">
+      <Filter>src\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\transformcomponent.h">
+      <Filter>src\components</Filter>
+    </ClInclude>
     <ClInclude Include="src\core.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -380,6 +388,9 @@
       <Filter>src\graphics\layers</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\renderable2D.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderables2d_idService.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\renderer2D.h">
@@ -451,6 +462,9 @@
     <ClInclude Include="src\utils\logger.h">
       <Filter>src\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\projectutils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\utils\resourceloader.h">
       <Filter>src\utils</Filter>
     </ClInclude>
@@ -463,8 +477,6 @@
     <ClInclude Include="src\utils\timestep.h">
       <Filter>src\utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\tagcomponent.h" />
-    <ClInclude Include="src\components\transformcomponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -742,6 +754,9 @@
       <Filter>src\graphics\layers</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\renderable2D.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderables2d_idService.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\scene.cpp">

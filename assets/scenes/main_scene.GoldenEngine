@@ -1,0 +1,42 @@
+Scene: main_scene
+Layers:
+  - Layer: bg_layer
+    Renderables:
+      - Renderable: 10038
+        Name: background
+        TexturePath: D:/Code/Games Engine/GoldenEngineCopy/assets/img/sky.png
+        TagComponent:
+          Tag: untaged
+        TransformComponent:
+          Position: [-16, -9, 0]
+          Rotation: [0, 0, 0]
+          Scale: [32, 20, 1]
+  - Layer: layer
+    Renderables:
+      - Renderable: 16010
+        Name: player
+        TexturePath: D:/Code/Games Engine/GoldenEngineCopy/assets/img/player_01.png
+        TagComponent:
+          Tag: player
+        TransformComponent:
+          Position: [-3, -3, 0]
+          Rotation: [0, 0, 0]
+          Scale: [3, 3, 1]
+  - Layer: uiLayer
+    Renderables:
+      - Renderable: 13622
+        Name: unnamed
+        TagComponent:
+          Tag: untaged
+        TransformComponent:
+          Position: [-15.5, 8, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      - Renderable: 3114
+        Name: unnamed
+        TagComponent:
+          Tag: untaged
+        TransformComponent:
+          Position: [8, 8, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]

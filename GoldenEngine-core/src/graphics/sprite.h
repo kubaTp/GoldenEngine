@@ -11,6 +11,11 @@ namespace golden { namespace graphics {
 		Sprite(float x, float y, float width, float heigh, const uint32_t color);
 		Sprite(float x, float y, float width, float heigh, const maths::Vec4 color);
 		Sprite(float x, float y, float width, float heigh, Texture* texture);
+
+
+		Sprite(std::string name, float x, float y, float width, float heigh, const uint32_t color);
+		Sprite(std::string name, float x, float y, float width, float heigh, const maths::Vec4 color);
+		Sprite(std::string name, float x, float y, float width, float heigh, Texture* texture);
 		//~Sprite();
 	};
 }}

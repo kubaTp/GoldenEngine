@@ -9,6 +9,7 @@ namespace golden { namespace graphics {
 		{
 		public:
 			TileLayer(Shader& shader);
+
 			virtual ~TileLayer();
 		};
 

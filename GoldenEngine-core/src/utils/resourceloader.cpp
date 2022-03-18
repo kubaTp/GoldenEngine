@@ -4,7 +4,7 @@ std::string golden::ResourceLoader::m_ResPath = "empty path";
 std::string golden::ResourceLoader::m_PrjPath = "empty path";
 
 namespace golden {
-
+	
 	void ResourceLoader::setResourcePath(std::string respaths)
 	{
 		m_ResPath = respaths;
@@ -18,10 +18,5 @@ namespace golden {
 	std::string ResourceLoader::findFile(std::string filepath)
 	{
 		return m_ResPath + filepath;
-	}
-
-	std::string ResourceLoader::getSerializedDataPath()
-	{
-		return getProjectPath() + "projectData/serialized/";
 	}
 }

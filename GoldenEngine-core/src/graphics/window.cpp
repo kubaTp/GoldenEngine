@@ -25,6 +25,11 @@ namespace golden { namespace graphics {
 
 		GE_ASSERT(!m_Window, "failed to create window"); // failed to create glfw window
 			
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 		glfwMakeContextCurrent(m_Window); // make context of current window called m_Window
 		glfwSetWindowUserPointer(m_Window, this); // set pointer to current window to set all callback properly
 		glfwSetFramebufferSizeCallback(m_Window, window_resize); // set resize callback
@@ -47,7 +52,7 @@ namespace golden { namespace graphics {
 
 		Logger::logGoldenEngine();
 
-		glEnable(GL_BLEND); // enable blending for alfa		
+		glEnable(GL_BLEND); // enable blending for alfa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		m_Icon.pixels = ImageLoader::loadImageNeutralWithoutChannel(ResourceLoader::findFile("img/transparent.png"), &m_Icon.width, &m_Icon.height); // change this to project path

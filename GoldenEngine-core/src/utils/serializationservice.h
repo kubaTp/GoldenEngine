@@ -5,18 +5,26 @@
 #include "../maths/maths.h"
 
 #include "resourceloader.h" 
-#include "../graphics/texture.h" // serialize texture
-#include "../components/components_pack.h" // serialize component
-#include "../graphics/shader.h" // serialize shader
-#include "../graphics/renderable2D.h"
+
+#include "../graphics/renderable2D.h"		// serialize renderable
+#include "../graphics/scene.h"              // serialize scene
 
 #include <yaml-cpp/emitterstyle.h>
 #include <yaml-cpp/eventhandler.h>
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
+#include <sstream>
 
 namespace golden {
+
+	// overload operators for vectors
+	YAML::Emitter& operator<<(YAML::Emitter& out, const maths::Vec3& vec3)
+	{
+		out << YAML::Flow; // [x, y, z]
+		out << YAML::BeginSeq << vec3.x << vec3.y << vec3.z << YAML::EndSeq;
+		return out;
+	}
 
 	// static class which handles serialization of obeject in game
 	class SerializationService
@@ -25,10 +33,12 @@ namespace golden {
 		SerializationService() { }
 
 	public:
+		// old serialization to json file
 		#pragma region SERIALIZATION_SERVICE_FUNCS
 #if 0
 		/*---------------- MATHS ----------------*/
-		inline static void serialize(maths::Vec3& vec3, std::string nameofvec)
+		inline static void serialize(
+			& vec3, std::string nameofvec)
 		{
 			std::string textureOutTemplate = R"json({
 			"value" : [xValue, yValue, zValue]
@@ -201,38 +211,117 @@ namespace golden {
 #endif
 #pragma endregion
 
-		/* --- RENDERABLE --- */
-		static void serialize(const graphics::Renderable2D* sprite, std::string nameofrenderable)
+		static void serializeRenderable(graphics::Renderable2D* sprite, YAML::Emitter& out)
+		{
+			out << YAML::BeginMap; // Renderable2D
+			out << YAML::Key << "Renderable"  << YAML::Value << sprite->getRenderable2dID();
+			out << YAML::Key << "Name"		  << YAML::Value << sprite->getName();
+			if(sprite->getTexturePath() != "empty")
+				out << YAML::Key << "TexturePath" << YAML::Value << sprite->getTexturePath();
+
+			if (sprite->hasComponent<ecs::TagComponent>())
+			{
+				out << YAML::Key << "TagComponent";
+				out << YAML::BeginMap; // Tag Component
+
+				auto& tag = sprite->getComponent<ecs::TagComponent>()->tag;
+				out << YAML::Key << "Tag" << YAML::Value << tag;
+
+				out << YAML::EndMap;	// Tag Component
+			}
+
+			if (sprite->hasComponent<ecs::TransformComponent>())
+			{
+				out << YAML::Key << "TransformComponent";
+				out << YAML::BeginMap; // Transform Component
+
+				auto& trns = sprite->getComponent<ecs::TransformComponent>();
+				out << YAML::Key << "Position" << YAML::Value << trns->position;
+				out << YAML::Key << "Rotation" << YAML::Value << trns->rotation;
+				out << YAML::Key << "Scale" << YAML::Value << trns->scale;
+
+				out << YAML::EndMap;	// Transform Component
+			}
+
+			out << YAML::EndMap;  // Renderable2D
+		}
+
+		/* --- SCENE --- */
+		static void serializeScene(graphics::Scene* scene)
 		{
 			YAML::Emitter out;
-			out << YAML::BeginMap;
-			out << YAML::Key << "Renderable" << YAML::Value << nameofrenderable;
-			out << YAML::Key << "TexturePath" << YAML::Value << sprite->getTexturePath();
+			out << YAML::BeginMap; // scene
+			out << YAML::Key << "Scene"  << YAML::Value << scene->getName();
+			out << YAML::Key << "Layers" << YAML::BeginSeq; // layers
+			
+			for (auto& layer : scene->getLayers())
+			{
+				out << YAML::BeginMap; // layer
+				out << YAML::Key << "Layer" << YAML::Value << layer.first;
+				out << YAML::Key << "Renderables" << YAML::BeginSeq; // renderables
 
-			out << YAML::EndMap;			
+				for (graphics::Renderable2D* renderable : layer.second->getRenderables())
+				{
+					serializeRenderable(renderable, out);
+				}
 
-			std::string outDir = ResourceLoader::getSerializedDataPath() + nameofrenderable + ".yaml";
+				out << YAML::EndSeq; // renderables
+				out << YAML::EndMap; // layer
+			}
 
-			if (!std::filesystem::exists(outDir))			
-				FileManager::create_dir("projectData/serialized");		
+			out << YAML::EndSeq; // layers
+			out << YAML::EndMap; // scene
 
-			std::ofstream oFile(outDir);
+			std::string outDir = ResourceLoader::getResourcePath() + "scenes";
+
+			if (!std::filesystem::exists(outDir))
+				FileManager::create_dir("assets/scenes");
+
+			std::ofstream oFile(outDir + "/" + scene->getName() + ".GoldenEngine");
 			oFile << out.c_str();
 
 			oFile.close();
 		}
 
-		static void deserialize()
-		{		
-			std::ifstream input(ResourceLoader::getSerializedDataPath() + "player.yaml");
-			YAML::Node doc = YAML::Load(input);
-			std::cout << "--- doc ---" << std::endl;
-			std::cout << doc << std::endl;
+		static bool deserializeScene(const std::string& scene_name)
+		{
+			std::string filepath = ResourceLoader::getResourcePath() + "scenes/" + scene_name + ".GoldenEngine";
+			std::ifstream istream(filepath);
+			std::stringstream ss;
+			ss << istream.rdbuf();
+
+			YAML::Node data = YAML::Load(ss.str());
+			if (!data["Scene"])
+				return false;
+
+			std::string scenename = data["Scene"].as<std::string>();
+
+			auto renderables = data["Renderables"];
+
+			if (renderables)
+			{
+				for (auto renderable : renderables)
+				{
+					uint32_t rid		 = renderable["Renderable"].as<uint32_t>();
+					std::string name	 = renderable["Name"].as<std::string>();
+					std::string textpath = renderable["TexturePath"].as<std::string>();
+					std::string tag      = "empty";
+
+					auto tagComp = renderable["TagComponent"];
+					if (tagComp)
+						tag = tagComp["Tag"].as<std::string>();
+
+					//std::cout << "name is " << name << ", textpath is " << textpath << ", tag is " << tag << std::endl;
+				}
+			}
+			return true;
 		}
 
+#if 0
 		inline static void clearDataFolder()
 		{
 			std::filesystem::remove_all(ResourceLoader::getProjectPath() + "projectData/serialized/");
 		}
+#endif
 	};
 }

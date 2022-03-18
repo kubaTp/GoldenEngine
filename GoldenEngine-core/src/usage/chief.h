@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <iostream>
 
@@ -35,12 +35,17 @@ namespace golden {
 
 		static void insertScene(graphics::Scene* scene) 
 		{ 
-			m_Layers = scene->getLayers();
+			m_ActiveScene = scene;
 		}
-
-		static void drawScene()
+		
+		static void drawScene() // draw all scenes in the scene submited to chief
 		{
 			render();
+		}
+
+		static void drawScene(std::string layername) // draw only one layer from layers submited in the scene
+		{
+			render(layername);
 		}
 
 	private:
@@ -54,7 +59,8 @@ namespace golden {
 		static bool m_Inited;
 		static bool m_FirstFrame;
 
-		static std::map<std::string, graphics::Layer*> m_Layers;
+		static golden::graphics::Scene* m_ActiveScene; // current scene
+		//static std::vector<std::pair<std::string, golden::graphics::Layer*>> m_Layers;
 
 		static graphics::FramebufferSpecification spec;
 	};

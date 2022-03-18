@@ -7,28 +7,72 @@ namespace golden { namespace graphics {
 		setDefaultOfUV();
 		m_Components.push_back(std::make_shared<ecs::TagComponent>()); // push different component
 		m_Components.push_back(std::make_shared<ecs::TransformComponent>());
+		
+		m_RenderableID = RenderablesIDService::genNewID();
 	}
 
 	Renderable2D::Renderable2D(maths::Vec3 position, maths::Vec2 size, uint32_t color)
-		: m_Size(size), m_Color(color), m_Texture(nullptr)
+		: m_Color(color), m_Texture(nullptr)
 	{
 		setDefaultOfUV();
 
 		m_Components.push_back(std::make_shared<ecs::TagComponent>()); // push different component
 		m_Components.push_back(std::make_shared<ecs::TransformComponent>());
 
-		getComponent<ecs::TransformComponent>()->position = position;
+		std::shared_ptr<ecs::TransformComponent> transform = getComponent<ecs::TransformComponent>();
+
+		transform->position = position;
+		transform->scale = maths::Vec3(size.x, size.y, 1);
+
+
+		m_RenderableID = RenderablesIDService::genNewID();
 	}
 
 	Renderable2D::Renderable2D(maths::Vec3 position, maths::Vec2 size, const maths::Vec4& color)
-		: m_Size(size), m_Color(convertColor(color))
+		: m_Color(convertColor(color)), m_Texture(nullptr)
 	{
 		setDefaultOfUV();		
 
 		m_Components.push_back(std::make_shared<ecs::TagComponent>()); // push different component
 		m_Components.push_back(std::make_shared<ecs::TransformComponent>());
 
-		getComponent<ecs::TransformComponent>()->position = position;
+		std::shared_ptr<ecs::TransformComponent> transform = getComponent<ecs::TransformComponent>();
+
+		transform->position = position;
+		transform->scale = maths::Vec3(size.x, size.y, 1);
+
+		m_RenderableID = RenderablesIDService::genNewID();
+	}
+
+	Renderable2D::Renderable2D(std::string name, maths::Vec3 position, maths::Vec2 size, uint32_t color)
+		: m_Color(color), m_Texture(nullptr), m_Name(name)
+	{
+		setDefaultOfUV();
+
+		m_Components.push_back(std::make_shared<ecs::TagComponent>()); // push different component
+		m_Components.push_back(std::make_shared<ecs::TransformComponent>());
+
+		std::shared_ptr<ecs::TransformComponent> transform = getComponent<ecs::TransformComponent>();
+
+		transform->position = position;
+		transform->scale = maths::Vec3(size.x, size.y, 1);
+
+		m_RenderableID = RenderablesIDService::genNewID();
+	}
+	Renderable2D::Renderable2D(std::string name, maths::Vec3 position, maths::Vec2 size, const maths::Vec4& color)
+		: m_Color(convertColor(color)), m_Texture(nullptr), m_Name(name)
+	{
+		setDefaultOfUV();
+
+		m_Components.push_back(std::make_shared<ecs::TagComponent>()); // push different component
+		m_Components.push_back(std::make_shared<ecs::TransformComponent>());
+
+		std::shared_ptr<ecs::TransformComponent> transform = getComponent<ecs::TransformComponent>();
+
+		transform->position = position;
+		transform->scale = maths::Vec3(size.x, size.y, 1);
+
+		m_RenderableID = RenderablesIDService::genNewID();
 	}
 
 	Renderable2D::~Renderable2D() { }

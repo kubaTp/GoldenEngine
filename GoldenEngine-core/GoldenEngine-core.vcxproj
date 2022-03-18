@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;GLEW_STATIC;_CONSOLE;FT2_BUILD_LIBRARY;YAML_CPP_STATIC_DEFINE;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLEW\include;..\Dependencies\GLFW\include;..\Dependencies\irrklang\include;extLibs\freetype\include;extLibs\freetype\include\freetype;extLibs\freetype\include\freetype\config;extLibs\freetype\include\freetype\internal;extLibs\freetype\include\freetype\internal\services;extLibs\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\GLEW\include;..\Dependencies\GLFW\include;..\Dependencies\irrklang\include;extLibs\freetype\include;extLibs\freetype\include\freetype;extLibs\freetype\include\freetype\config;extLibs\freetype\include\freetype\internal;extLibs\freetype\include\freetype\internal\services;extLibs\yaml-cpp\include;extLibs\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -75,7 +75,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;GLEW_STATIC;_CONSOLE;FT2_BUILD_LIBRARY;YAML_CPP_STATIC_DEFINE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLEW\include;..\Dependencies\GLFW\include;..\Dependencies\irrklang\include;extLibs\freetype\include;extLibs\freetype\include\freetype;extLibs\freetype\include\freetype\config;extLibs\freetype\include\freetype\internal;extLibs\freetype\include\freetype\internal\services;extLibs\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\GLEW\include;..\Dependencies\GLFW\include;..\Dependencies\irrklang\include;extLibs\freetype\include;extLibs\freetype\include\freetype;extLibs\freetype\include\freetype\config;extLibs\freetype\include\freetype\internal;extLibs\freetype\include\freetype\internal\services;extLibs\yaml-cpp\include;extLibs\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -92,7 +92,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="core.h" />
     <ClInclude Include="extLibs\freetype-gl\common.h" />
     <ClInclude Include="extLibs\freetype-gl\freetype-gl.h" />
     <ClInclude Include="extLibs\freetype-gl\ftgl-utils.h" />
@@ -117,6 +116,7 @@
     <ClInclude Include="extLibs\imgui\imstb_textedit.h" />
     <ClInclude Include="extLibs\imgui\imstb_truetype.h" />
     <ClInclude Include="extLibs\stb-image\stb_image.h" />
+    <ClInclude Include="extLibs\stb-image\stb_image_write.h" />
     <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\anchor.h" />
     <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\binary.h" />
     <ClInclude Include="extLibs\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
@@ -175,6 +175,7 @@
     <ClInclude Include="src\graphics\layers\layers_pack.h" />
     <ClInclude Include="src\graphics\layers\tilelayer.h" />
     <ClInclude Include="src\graphics\renderable2D.h" />
+    <ClInclude Include="src\graphics\renderables2d_idService.h" />
     <ClInclude Include="src\graphics\renderer2D.h" />
     <ClInclude Include="src\graphics\scene.h" />
     <ClInclude Include="src\graphics\shader.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="src\utils\fileutils.h" />
     <ClInclude Include="src\utils\imageloader.h" />
     <ClInclude Include="src\utils\logger.h" />
+    <ClInclude Include="src\utils\projectutils.h" />
     <ClInclude Include="src\utils\resourceloader.h" />
     <ClInclude Include="src\utils\serializationservice.h" />
     <ClInclude Include="src\utils\timer.h" />
@@ -297,6 +299,7 @@
     <ClCompile Include="src\graphics\layers\layer.cpp" />
     <ClCompile Include="src\graphics\layers\tilelayer.cpp" />
     <ClCompile Include="src\graphics\renderable2D.cpp" />
+    <ClCompile Include="src\graphics\renderables2d_idService.cpp" />
     <ClCompile Include="src\graphics\scene.cpp" />
     <ClCompile Include="src\graphics\shader.cpp" />
     <ClCompile Include="src\graphics\simple2Drenderer.cpp" />

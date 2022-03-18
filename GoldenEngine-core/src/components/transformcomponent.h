@@ -1,25 +1,16 @@
 #pragma once
 
 #include "component.h"
-#include "../maths/maths.h"
 
+
+// TODO : right now scale works as width and height of renderable
+// it needs to be fixed in the future
 namespace golden { namespace ecs {
 
 	class TransformComponent : public Component
 	{
 	public:
 		TransformComponent() { compType = ComponentsType::TRANSFORM_COMPONENT; setVecsDefault(); }
-
-	public:
-		void Translate(const maths::Vec3 pos) // constant movement in direction
-		{
-
-		}
-
-		void Rotate(const maths::Vec3 rot) // consant rotation in given vec3
-		{
-
-		}
 
 	private:
 		maths::Vec3& sum() const { return position * rotation * scale; }
@@ -28,7 +19,7 @@ namespace golden { namespace ecs {
 		{
 			position = maths::Vec3(1, 1, 1);
 			scale    = maths::Vec3(1, 1, 1);
-			rotation = maths::Vec3(1, 1, 1);
+			rotation = maths::Vec3(0, 0, 0);
 		}
 
 	public:
