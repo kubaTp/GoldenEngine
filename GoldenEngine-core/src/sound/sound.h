@@ -9,7 +9,7 @@ namespace golden { namespace sound {
 	{
 	public:
 		Sound(std::string soundName, std::string soundPath);
-		Sound(std::string soundName, std::string soundPath, bool loop);
+		Sound(std::string soundName, std::string soundPath, bool loop); // contstructor with loop
 
 		void change(Sound* sound);
 
@@ -17,7 +17,7 @@ namespace golden { namespace sound {
 		const std::string& getSoundPath() const { return m_SoundPath; }
 		const bool& getLoop() const { return m_Loop; }
 
-		inline virtual void debug()
+		inline virtual void desc()
 		{
 			std::cout << "soundname: " << m_SoundName <<
 				", soundpath: " << m_SoundPath << ", loop: " << m_Loop << std::endl;

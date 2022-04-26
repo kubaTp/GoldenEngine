@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 #define NOMINMAX 1
 #include "Windows.h"
 
@@ -29,6 +30,52 @@ namespace golden {
 			m_Frequency = 1.0 / frequency.QuadPart;
 			QueryPerformanceCounter(&m_Start);
 		}
-
 	};
 }
+
+#else
+/*--- static class which is addtional added to measuere time by user ---*/
+
+#include <chrono>
+#include <ctime>
+#include <cmath>
+
+class Timer
+{
+public:
+    Timer() { }
+
+public:
+    void start()
+    {
+        m_StartTime = std::chrono::system_clock::now();
+        m_Running = true;
+    }
+
+    void stop()
+    {
+        m_EndTime = std::chrono::system_clock::now();
+        m_Running = false;
+    }
+
+    double elapsedMilliseconds()
+    {
+        std::chrono::time_point<std::chrono::system_clock> endTime;
+
+        if (m_Running)
+            endTime = std::chrono::system_clock::now();
+        else
+            endTime = m_EndTime;
+
+        return std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_StartTime).count();
+    }
+
+    double elapsedSeconds() { return elapsedMilliseconds() / 1000.0; }
+
+private:
+    std::chrono::time_point<std::chrono::system_clock> m_StartTime;
+    std::chrono::time_point<std::chrono::system_clock> m_EndTime;
+    bool m_Running = false;
+};
+
+#endif

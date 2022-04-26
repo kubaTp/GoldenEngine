@@ -25,7 +25,7 @@ namespace golden { namespace ecs {
 		void InvokeOnStartFunction() { OnStart(); }
 		void InvokeOnUpdateFunction() { OnUpdate(); }
 
-	public:
+	protected:
 		ComponentsType compType;
 	};
 }}

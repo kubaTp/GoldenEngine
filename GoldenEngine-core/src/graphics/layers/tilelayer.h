@@ -1,7 +1,7 @@
 #pragma once
 
 #include "layer.h"
-#include "../batchrenderer2D.h"
+#include "../renderers/batchrenderer2D.h"
 
 namespace golden { namespace graphics {
 
@@ -9,6 +9,7 @@ namespace golden { namespace graphics {
 		{
 		public:
 			TileLayer(Shader& shader);
+
 			virtual ~TileLayer();
 		};
 

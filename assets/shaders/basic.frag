@@ -17,7 +17,7 @@ uniform sampler2D textures[32];
 
 void main()
 {
-	float intensity = 1.0f / length(fs_in.position.xy - light_pos) * 3.5;
+	float intensity = (1.0f / length(fs_in.position.xy - light_pos)) * 5.5;
 	vec4 texColor = fs_in.color;
 
 	if(fs_in.tid > 0.0)

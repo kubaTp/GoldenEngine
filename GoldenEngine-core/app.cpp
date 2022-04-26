@@ -1,6 +1,5 @@
 #define PREDEFINED_MACROS
 #include "src/core.h"
-#include "src/graphics/scene.h"
 
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
@@ -10,24 +9,11 @@
 #define GE_EDITOR 0
 // projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
 
-// TODO : scene abstraction ( framebuffer in chief )
-// TODO : implement ECS
-// TODO : add serializing scene into a .json file
+#include "mycomponent.h" // example component file
 
-class MyComponent : public golden::ecs::Component
-{
-	void OnStart() override
-	{		
-		std::cout << "ON START" << endl;
-	}
-
-	void OnUpdate() override
-	{
-		//std::cout << "ON UPDATE" << endl;
-	}
-};
-
+#pragma region SANDBOX
 #if 1
+
 int main()
 {
 	using namespace golden;
@@ -38,14 +24,15 @@ int main()
 	system("CLS");
 	srand(time(NULL));
 
-	rs::setResourcePath("D:/Code/Games Engine/GoldenEngineCopy/assets/");
-	rs::setProjectPath("D:/Code/Games Engine/GoldenEngineCopy/");
+	rs::setResourcePath("D:/Code/Games Engine/Reference/GoldenEngine-dev/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/Reference/GoldenEngine-dev/");
 
-	Scene mainscene("main_scane");
-	SoundManager::add(new Sound("guitar", rs::findFile("music/guitar.wav"), true));
-	SoundManager::add(new Sound("barbarian", rs::findFile("music/barbarian.wav"), true));
+	Scene mainscene("main_scene");
+
+	SoundManager::add(new Sound("guitar",      rs::findFile("music/guitar.wav"), true));
+	SoundManager::add(new Sound("barbarian",   rs::findFile("music/barbarian.wav"), true));
 	SoundManager::add(new Sound("buttonclick", rs::findFile("music/buttonclick.mp3")));
-	SoundManager::add(new Sound("menu", rs::findFile("music/menumusic.mp3")));
+	SoundManager::add(new Sound("menu",		   rs::findFile("music/menumusic.mp3")));
 
 	Window window("Golden Engine", 1200.0f, 730.0f);
 	window.clear();
@@ -53,22 +40,26 @@ int main()
 	Chief::init(new BatchRenderer2D());
 
 	Shader shader_lighting(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
-	Shader shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
-	Shader font_shader(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/font.frag"));
+	Shader shader(rs::findFile("shaders/basic.vert"),		   rs::findFile("shaders/font.frag"));
+	Shader font_shader(rs::findFile("shaders/basic.vert"),     rs::findFile("shaders/font.frag"));
 
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
+	TileLayer uiLayer(font_shader);
 	TileLayer layer(shader);
 	TileLayer background_layer(shader_lighting);
-	TileLayer uiLayer(font_shader);
 
-	mainscene.addLayer("layer", &layer);
-	mainscene.addLayer("uiLayer", &uiLayer);
 	mainscene.addLayer("bg_layer", &background_layer);
+	mainscene.addLayer("layer",    &layer);	
+	mainscene.addLayer("uiLayer",  &uiLayer);
+
+	mainscene.removeLayer("adsad"); // validating
+
+	Camera mainCamera("Main Camera", maths::Vec3(0, 0, 0), maths::Vec3(0, 0, 0));
+	mainscene.insertCamera(&mainCamera);
 
 	Chief::insertScene(&mainscene);
-	Chief::descLayers();
 
 	Texture textures[] =
 	{
@@ -100,108 +91,83 @@ int main()
 
 #endif
 #endif
-#pragma endregion
+	#pragma endregion
 
-	Sprite* sky_bg = new Sprite(-16.0f, -9.0f, 32, 20, &textures[3]);
+	Sprite* sky_bg = new Sprite("background",  - 16.0f, -9.0f, 32, 20, &textures[3]);
 	background_layer.add(sky_bg);
 
-	Sprite* transparentSprite = new Sprite(-3, -3, 3, 3, &textures[2]);
-	layer.add(transparentSprite); // transparent one sprite
+	Sprite* transparentSprite = new Sprite("player", - 3, -3, 3, 3, &textures[2]);
+	layer.add(transparentSprite);
+	transparentSprite->getComponent<ecs::TagComponent>()->tag = "player";
 
 	transparentSprite->addComponent<MyComponent>(); // adding component
 
-
-#if 1
 	if (transparentSprite->hasComponent<ecs::TransformComponent>())
 	{
-		std::cout << "has the component" << endl;
-		std::shared_ptr<ecs::TransformComponent> transform = transparentSprite->getComponent<ecs::TransformComponent>();
-		std::cout << "pos is " << transparentSprite->getComponent<ecs::TransformComponent>()->position << endl;
+		lg::logInfo("has the component");
+		std::shared_ptr<ecs::TransformComponent> transform = transparentSprite->getComponent<ecs::TransformComponent>();	
 	}
 	else
-	{
-		std::cout << "does not has the component" << endl;
-	}
+		lg::logError("transparent sprite does not has the component");
+
+	#pragma region ECS_DEBUGING
+#if 0
+	std::cout << "player pos : "   << transparentSprite->getComponent<ecs::TransformComponent>()->position << endl;
+	std::cout << "player rot : "   << transparentSprite->getComponent<ecs::TransformComponent>()->rotation << endl;
+	std::cout << "player scale : " << transparentSprite->getComponent<ecs::TransformComponent>()->scale    << endl;
+
+	std::cout << "background pos : "   << sky_bg->getComponent<ecs::TransformComponent>()->position << endl;
+	std::cout << "background rot : "   << sky_bg->getComponent<ecs::TransformComponent>()->rotation << endl;
+	std::cout << "background scale : " << sky_bg->getComponent<ecs::TransformComponent>()->scale    << endl;
 #endif
-
-	#pragma region SERIALIZATION_TEST
-
-	//SerializationService::serialize(transparentSprite, "player");
-
-	#pragma endregion
-
-	#if 0
-		layer.add(new Sprite(2.5f, -2, 4, 4, &textures[0])); // 24 bit one sprite
-		layer.add(new Sprite(7.0f, -2, 4, 4, Vec4(1, 1, 1, 1)));
-	#endif
+#pragma endregion
 
 	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
 	FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 29));
-	FontManager::add(new Font(FontType::SourceSerifPro, rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
+	FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
 
-	Label* fpsLabel = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
+	Label* fpsLabel  = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
 	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
+
 	uiLayer.add(fpsLabel);
 	uiLayer.add(nameLabel);
-
-	// TODO : add it in shader class
-	GLint textIDs[] =
-	{
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-	};
-
-	shader.enable();
-	shader.setUniform1iv("textures", textIDs, 10);
-	shader.disabled();
-
-	shader_lighting.enable();
-	shader_lighting.setUniform1iv("textures", textIDs, 10);
-	shader_lighting.disabled();
-
-	double x, y;
 	
+	double x, y;
 	Mat4 rotationMatrix = Mat4::idenity();
 
-	SoundManager::changeVolume(0.3f);
-	float deltaTime = 0.0f, volume = SoundManager::getVolume();
-	Vec3 newPos;
+	float deltaTime = 0.0f;
 
-#if 0
-	HWND myConsole = GetConsoleWindow();
-	ShowWindow(myConsole, 0);
+	#pragma region SERIALIZATION_TEST
 
-	ShowWindow(myConsole, 1);
-#endif
+	SerializationService::serializeScene(&mainscene);
+	//if (SerializationService::deserializeScene("main_scene"))
+		//lg::logInfo("Serialization is ok!");
+
+	#pragma endregion
+
 
 	/*--- GAME LOOP ---*/
 	while (!window.closed())
 	{
-		static bool firstFrame = true;
-		deltaTime += 0.001f;
 		window.clear();
 
-#if GE_EDITOR
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		//deltaTime += 0.001f;
+
+		#pragma region GE_EDITOR_LAYER
+		#if GE_EDITOR
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui_ImplGlfw_NewFrame();
+				ImGui::NewFrame();
 
 
-		ImGui::Begin("Function panel");
-		ImGui::Text("Project Sanbox");
-		ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f);
+				ImGui::Begin("Function panel");
+				ImGui::Text("Project Sanbox");
+				ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f);
 
-		ImGui::Image((void*)Chief::framebuffer->getBuffer(), ImVec2{ 320 * 1.5f, 180.0f * 1.5f });
-		ImGui::End();
-#endif
-
-		if (firstFrame) // start method
-		{	
-			SoundManager::changeVolume(0.6f);
-			SoundManager::play("menu");
-			SoundManager::muteAudio();
-			firstFrame = false;
-		}
-
+				ImGui::Image((void*)Chief::framebuffer->getBuffer(), ImVec2{ 320 * 1.5f, 180.0f * 1.5f });
+				ImGui::End();
+		#endif
+#pragma endregion
 
 		//rotationMatrix = Mat4::rotation(40, Vec3(0, 0, 1));
 		//rotationMatrix = Mat4::translation(Vec3(4.0f, 0.0f, 0.0f));
@@ -209,9 +175,6 @@ int main()
 		//shader.enable();
 		//shader.setUniformMat4("ml_matrix", rotationMatrix);
 		//shader.disabled();
-
-
-		//SoundManager::changeVolume(volume);
 
 		#pragma region COLOR_CHANGING
 #if 0
@@ -225,14 +188,13 @@ int main()
 		#pragma endregion
 
 		usage::Input::getMousePosition(x, y);
-		//shader_lighting.enable();
-		//shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
-		//shader_lighting.disabled();
+		shader_lighting.enable();
+		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		shader_lighting.disabled();
 
-		newPos = Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
-		transparentSprite->getComponent<ecs::TransformComponent>()->position = newPos;
+		transparentSprite->getComponent<ecs::TransformComponent>()->position = 
+			maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 
-		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1));
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
 		#pragma region INPUT_TESTING
@@ -251,61 +213,239 @@ int main()
 #endif
 	#pragma endregion
 
-		//Chief::render();
 		Chief::drawScene();
-		//Chief::render("layer");
 
+		#pragma region GE_EDITOR_RENDER
 #if GE_EDITOR
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
-		window.update();
+#pragma endregion
 
+		window.update();		
 	}
 
 	SoundManager::destroy();
+	return 0;
+}
+
+#endif
+#pragma endregion
+
+#pragma region 3D
+#if 0
+
+#include "src/core.h"
+
+#include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "extLibs/stb-image/stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+GLfloat vertices[] =
+{ //     COORDINATES     /        COLORS        /   TexCoord  //
+	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
+};
+
+GLuint indices[] =
+{
+	0, 1, 2,
+	0, 2, 3,
+	0, 1, 4,
+	1, 2, 4,
+	2, 3, 4,
+	3, 0, 4
+};
+
+int main()
+{
+	rs::setResourcePath("D:/Code/Games Engine/Reference/GoldenEngine-dev/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/Reference/GoldenEngine-dev/");
+
+	Window window("3d sandbox", 820, 600, true);
+
+	// todo : set up 3drenderable class
+	golden::graphics::Shader shaderProgram(rs::findFile("shaders/default.vert"), rs::findFile("shaders/default.frag"));
+
+	uint32_t vao, vbo, ibo;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	golden::graphics::Texture brickTex(rs::findFile("img/24Bit_img_chess_2.png"));
+
+	float rotation = 0.0f;
+	double prevTime = glfwGetTime();
+
+	while (!window.closed())
+	{
+		window.clear();
+
+		shaderProgram.enable();
+
+		double crntTime = glfwGetTime();
+		if (crntTime - prevTime >= 1 / 60)
+		{
+			rotation += 0.5f;
+			prevTime = crntTime;
+		}
+
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 proj = glm::mat4(1.0f);
+
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+		proj = glm::perspective(glm::radians(45.0f), (float)820 / 600, 0.1f, 100.0f);
+
+		shaderProgram.setUniformMat4("model", model);
+		shaderProgram.setUniformMat4("view", view);
+		shaderProgram.setUniformMat4("proj", proj);
+
+		shaderProgram.setUniform1f("scale", 0.5f);
+
+		brickTex.bind();
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
+		window.update();
+	}
+
 	return 0;
 }
 #endif
+#pragma endregion
 
-#pragma region EXT_TEST
+#pragma region FREETYPE_TEST
 #if 0
-int main()
-{
-	using namespace golden;
-	using namespace graphics;
-	using namespace maths;
-	using namespace sound;
+#include <stdio.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "extLibs/stb-image/stb_image_write.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-	system("CLS");
-	srand(time(NULL));
+#define NUM_GLYPHS 128
 
-	rs::setResourcePath("D:/Code/Games Engine/GoldenEngine/assets/");
+#include <stdio.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "extLibs/stb-image/stb_image_write.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-	Window window("fb test", 960, 512);
-	window.clear();
+#define NUM_GLYPHS 128
 
-	Simple2DRenderer renderer;
+struct glyph_info {
+	int x0, y0, x1, y1;	// coords of glyph in the texture atlas
+	int x_off, y_off;   // left & top bearing when rendering
+	int advance;        // x advance when rendering
+} info[NUM_GLYPHS];
 
-	Shader shader(rs::findFile("shaders/simple.vert"), rs::findFile("shaders/simple.frag"));
-	StaticSprite sprite(-2, -2, 4, 4, Vec4(0.2f , 0.3f, 0.4f, 1), shader);
-
-	renderer.submit(&sprite);
-
-	/*--- GAME LOOP ---*/
-	while (!window.closed())
-	{
-
-		// render
-		renderer.submit(&sprite);
-		renderer.flush();
-
-		window.update();
+int main(int argc, char** argv) {
+	if (argc < 3) {
+		printf("usage: %s <font> <size>\n", argv[0]);
+		return 1;
 	}
 
-	SoundManager::destroy();
+	FT_Library ft;
+	FT_Face    face;
+
+	FT_Init_FreeType(&ft);
+	FT_New_Face(ft, argv[1], 0, &face);
+	FT_Set_Char_Size(face, 0, atoi(argv[2]) << 6, 96, 96);
+
+	// quick and dirty max texture size estimate
+
+	int max_dim = (1 + (face->size->metrics.height >> 6)) * ceilf(sqrtf(NUM_GLYPHS));
+	int tex_width = 1;
+	while (tex_width < max_dim) tex_width <<= 1;
+	int tex_height = tex_width;
+
+	// render glyphs to atlas
+
+	char* pixels = (char*)calloc(tex_width * tex_height, 1);
+	int pen_x = 0, pen_y = 0;
+
+	for (int i = 0; i < NUM_GLYPHS; ++i) {
+		FT_Load_Char(face, i, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT);
+		FT_Bitmap* bmp = &face->glyph->bitmap;
+
+		if (pen_x + bmp->width >= tex_width) {
+			pen_x = 0;
+			pen_y += ((face->size->metrics.height >> 6) + 1);
+		}
+
+		for (int row = 0; row < bmp->rows; ++row) {
+			for (int col = 0; col < bmp->width; ++col) {
+				int x = pen_x + col;
+				int y = pen_y + row;
+				pixels[y * tex_width + x] = bmp->buffer[row * bmp->pitch + col];
+			}
+		}
+
+		// this is stuff you'd need when rendering individual glyphs out of the atlas
+
+		info[i].x0 = pen_x;
+		info[i].y0 = pen_y;
+		info[i].x1 = pen_x + bmp->width;
+		info[i].y1 = pen_y + bmp->rows;
+
+		info[i].x_off = face->glyph->bitmap_left;
+		info[i].y_off = face->glyph->bitmap_top;
+		info[i].advance = face->glyph->advance.x >> 6;
+
+		pen_x += bmp->width + 1;
+	}
+
+	FT_Done_FreeType(ft);
+
+	// write png
+
+	char* png_data = (char*)calloc(tex_width * tex_height * 4, 1);
+	for (int i = 0; i < (tex_width * tex_height); ++i) {
+		png_data[i * 4 + 0] |= pixels[i];
+		png_data[i * 4 + 1] |= pixels[i];
+		png_data[i * 4 + 2] |= pixels[i];
+		png_data[i * 4 + 3] = 0xff;
+	}
+
+	stbi_write_png("font_output.png", tex_width, tex_height, 4, png_data, tex_width * 4);
+
+	free(png_data);
+	free(pixels);
+
 	return 0;
-}
+
 #endif
 #pragma endregion
 
@@ -361,169 +501,6 @@ int main()
 	FreeImage_Unload(dib);
 
 	return 0;
-}
-#endif
-#pragma endregion
-
-#pragma region 3D_TEST
-#if 0
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
-#include <cstdlib>
-
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength);
-
-GLfloat rotationX = 0.0f;
-GLfloat rotationY = 0.0f;
-
-int main(void)
-{
-	GLFWwindow* window;
-
-	// Initialize the library
-	if (!glfwInit())
-	{
-		return -1;
-	}
-
-	// Create a windowed mode window and its OpenGL context
-	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
-
-	glfwSetKeyCallback(window, keyCallback);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
-
-
-	int screenWidth, screenHeight;
-	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	glViewport(0.0f, 0.0f, screenWidth, screenHeight);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 1000);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	GLfloat halfScreenWidth = SCREEN_WIDTH / 2;
-	GLfloat halfScreenHeight = SCREEN_HEIGHT / 2;
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glPushMatrix();
-		glTranslatef(halfScreenWidth, halfScreenHeight, -500);
-		glRotatef(rotationX, 1, 0, 0);
-		glRotatef(rotationY, 0, 1, 0);
-		glTranslatef(-halfScreenWidth, -halfScreenHeight, 500);
-
-		DrawCube(halfScreenWidth, halfScreenHeight, -500, 200);
-
-		glPopMatrix();
-
-		glfwSwapBuffers(window);
-
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-
-	return 0;
-}
-
-
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	//std::cout << key << std::endl;
-
-	const GLfloat rotationSpeed = 10;
-
-	// actions are GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_W:
-			rotationX -= rotationSpeed;
-			break;
-		case GLFW_KEY_S:
-			rotationX += rotationSpeed;
-			break;
-		case GLFW_KEY_D:
-			rotationY += rotationSpeed;
-			break;
-		case GLFW_KEY_A:
-			rotationY -= rotationSpeed;
-			break;
-		}
-	}
-}
-
-void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
-{
-	GLfloat halfSideLength = edgeLength * 0.5f;
-
-	GLfloat vertices[] =
-	{
-		// front face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// back face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom left
-
-		// left face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// right face
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// top face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// top face
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength  // bottom left
-	};
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glColor3f( colour[0], colour[1], colour[2] );
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-	
-	glDrawArrays(GL_QUADS, 0, 24);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 #endif
 #pragma endregion

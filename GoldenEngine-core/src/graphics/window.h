@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../utils/timer.h"
 #include "../utils/assert.h"
 #include "../utils/logger.h"
 #include "../utils/timestep.h"
@@ -28,11 +27,11 @@ namespace golden { namespace graphics {
 	public:
 		uint16_t fps = 0;
 	public:
-		Window(const char* title, uint16_t width, uint16_t height);
+		Window(const char* title, uint16_t width, uint16_t height, bool initIn3dMode = false);
 		~Window();
 
 		void clear() const;
-		void update(); // swap buffers and poll events
+		void update();		 // swap buffers and poll events
 		bool closed() const; // check if window should be closed
 
 		inline uint16_t getWidth() const { return m_Width; };
@@ -47,8 +46,10 @@ namespace golden { namespace graphics {
 		inline void setWindowIcon(const std::string& imagePath);
 
 		friend class usage::Input;
+
 	private:
 		void init();
+		void Window::init3d_func();
 
 		friend static void window_resize(GLFWwindow* window, int width, int height);
 		friend static void error_callback(int error, const char* description);

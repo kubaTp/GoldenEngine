@@ -4,6 +4,10 @@
 #include <iostream>
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../maths/maths.h"
 #include "../utils/fileutils.h"
 
@@ -26,6 +30,7 @@ namespace golden { namespace graphics {
 		void setUniform3f(const GLchar* name, const maths::Vec3& vector);
 		void setUniform4f(const GLchar* name, const maths::Vec4& vector);
 		void setUniformMat4(const GLchar* name, const maths::Mat4& matrix);
+		void setUniformMat4(const GLchar* name, const glm::mat4& matrix);
 
 		//abstracts for GL
 		void enable() const;
@@ -38,6 +43,7 @@ namespace golden { namespace graphics {
 	private:
 		GLuint load();
 		GLuint getUniformLocation(const GLchar* name);
+		void setTextureIDs();
 
 	private:
 		uint32_t m_ShaderID;
