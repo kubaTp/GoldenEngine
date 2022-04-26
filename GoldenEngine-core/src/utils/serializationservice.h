@@ -6,8 +6,8 @@
 
 #include "resourceloader.h" 
 
-#include "../graphics/renderable2D.h"		// serialize renderable
-#include "../graphics/scene.h"              // serialize scene
+#include "../graphics/renderables/renderable2D.h"		// serialize renderable
+#include "../graphics/scenes/scene.h"              // serialize scene
 
 #include <yaml-cpp/emitterstyle.h>
 #include <yaml-cpp/eventhandler.h>

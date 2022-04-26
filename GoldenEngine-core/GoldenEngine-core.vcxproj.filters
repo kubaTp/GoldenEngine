@@ -141,6 +141,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core.h" />
     <ClInclude Include="extLibs\freetype-gl\common.h">
       <Filter>extLibs\freetype-gl</Filter>
     </ClInclude>
@@ -348,7 +349,7 @@
     <ClInclude Include="src\gebase.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\batchrenderer2D.h">
+    <ClInclude Include="src\graphics\renderers\batchrenderer2D.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\buffers\buffer.h">
@@ -366,13 +367,13 @@
     <ClInclude Include="src\graphics\buffers\vertexarray.h">
       <Filter>src\graphics\buffers</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\font.h">
+    <ClInclude Include="src\graphics\UI\font.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\fontmanager.h">
+    <ClInclude Include="src\graphics\UI\fontmanager.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\label.h">
+    <ClInclude Include="src\graphics\UI\label.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\layers\group.h">
@@ -387,28 +388,28 @@
     <ClInclude Include="src\graphics\layers\tilelayer.h">
       <Filter>src\graphics\layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\renderable2D.h">
+    <ClInclude Include="src\graphics\renderables\renderable2D.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\renderables2d_idService.h">
+    <ClInclude Include="src\graphics\renderables\renderables2d_idService.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\renderer2D.h">
+    <ClInclude Include="src\graphics\renderers\renderer2D.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\scene.h">
+    <ClInclude Include="src\graphics\scenes\scene.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\shader.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\simple2Drenderer.h">
+    <ClInclude Include="src\graphics\renderers\simple2Drenderer.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\sprite.h">
+    <ClInclude Include="src\graphics\renderables\sprite.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\staticsprite.h">
+    <ClInclude Include="src\graphics\renderables\staticsprite.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\texture.h">
@@ -477,6 +478,7 @@
     <ClInclude Include="src\utils\timestep.h">
       <Filter>src\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -720,7 +722,7 @@
     <ClCompile Include="extLibs\yaml-cpp\src\tag.cpp">
       <Filter>extLibs\yaml-cpp\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\batchrenderer2D.cpp">
+    <ClCompile Include="src\graphics\renderers\batchrenderer2D.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\buffers\buffer.cpp">
@@ -735,13 +737,13 @@
     <ClCompile Include="src\graphics\buffers\vertexarray.cpp">
       <Filter>src\graphics\buffers</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\font.cpp">
+    <ClCompile Include="src\graphics\UI\font.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\fontmanager.cpp">
+    <ClCompile Include="src\graphics\UI\fontmanager.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\label.cpp">
+    <ClCompile Include="src\graphics\UI\label.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\layers\group.cpp">
@@ -753,25 +755,25 @@
     <ClCompile Include="src\graphics\layers\tilelayer.cpp">
       <Filter>src\graphics\layers</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\renderable2D.cpp">
+    <ClCompile Include="src\graphics\renderables\renderable2D.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\renderables2d_idService.cpp">
+    <ClCompile Include="src\graphics\renderables\renderables2d_idService.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\scene.cpp">
+    <ClCompile Include="src\graphics\scenes\scene.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\shader.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\simple2Drenderer.cpp">
+    <ClCompile Include="src\graphics\renderers\simple2Drenderer.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\sprite.cpp">
+    <ClCompile Include="src\graphics\renderables\sprite.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\staticsprite.cpp">
+    <ClCompile Include="src\graphics\renderables\staticsprite.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\texture.cpp">
@@ -813,5 +815,6 @@
     <ClCompile Include="src\utils\resourceloader.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\camera.cpp" />
   </ItemGroup>
 </Project>

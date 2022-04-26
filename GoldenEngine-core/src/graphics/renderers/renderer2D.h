@@ -2,8 +2,8 @@
 
 #include <GL/glew.h>
 #include <vector>
-#include "font.h"
-#include "../maths/maths.h"
+#include "../UI/font.h"
+#include "../../maths/maths.h"
 
 namespace golden { namespace graphics {
 

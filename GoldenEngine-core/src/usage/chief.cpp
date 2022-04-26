@@ -71,6 +71,8 @@ namespace golden {
 		layer->shaderBinding(true);
 		m_Renderer2D->begin();
 		
+		//layer->m_Shader.setUniformMat4("vw_matrix", m_ActiveScene->m_MainCamera->cameraMatrix()); // apply camera matrix | todo : check if matrix need to be updated
+
 		for (graphics::Renderable2D* renderable : layer->getRenderables())
 		{		
 			if (renderable->hasComponent<ecs::TransformComponent>())

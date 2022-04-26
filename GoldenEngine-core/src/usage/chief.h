@@ -5,12 +5,12 @@
 #include <iostream>
 
 #include "../utils/logger.h"
-#include "../graphics/renderer2D.h"
-#include "../graphics/batchrenderer2D.h"
+#include "../graphics/renderers/renderer2D.h"
+#include "../graphics/renderers/batchrenderer2D.h"
 #include "../graphics/layers/layer.h"
 #include "../graphics/buffers/framebuffer.h"
 
-#include "../graphics/scene.h"
+#include "../graphics/scenes/scene.h"
 
 namespace golden {
 

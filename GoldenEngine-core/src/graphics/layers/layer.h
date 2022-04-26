@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../renderer2D.h"
-#include "../renderable2D.h"
+#include "../renderers/renderer2D.h"
+#include "../renderables/renderable2D.h"
 #include ".../../../../base.h"
 #include "../../utils/resourceloader.h"
 

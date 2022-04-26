@@ -3,8 +3,8 @@
 #include <cstddef>
 
 #include "renderer2D.h"
-#include "buffers/indexbuffer.h"
-#include "renderable2D.h"
+#include "../buffers/indexbuffer.h"
+#include "../renderables/renderable2D.h"
 
 #include "../../extLibs/freetype-gl/freetype-gl.h"
 

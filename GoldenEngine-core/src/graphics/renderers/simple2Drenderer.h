@@ -3,7 +3,7 @@
 #include <deque>
 
 #include "renderer2D.h"
-#include "staticsprite.h"
+#include "../renderables/staticsprite.h"
 
 namespace golden { namespace graphics {
 

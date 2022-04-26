@@ -5,9 +5,12 @@ namespace golden { namespace graphics {
 	void window_resize(GLFWwindow* window, int width, int height);
 	void error_callback(int error, const char* description);
 
-	Window::Window(const char* title, uint16_t width, uint16_t height) : m_Title(title), m_Width(width), m_Height(height)
+	Window::Window(const char* title, uint16_t width, uint16_t height, bool initIn3dMode) : m_Title(title), m_Width(width), m_Height(height)
 	{
-		init();
+		if (!initIn3dMode)
+			init();
+		else
+			init3d_func();
 
 		usage::Input::init(m_Timestep);
 	}
@@ -59,6 +62,33 @@ namespace golden { namespace graphics {
 		GE_ASSERT(m_Icon.pixels == nullptr, "Golden Engine error : failed to load image at path " + ResourceLoader::findFile("img/transparent.png"));
 		glfwSetWindowIcon(m_Window, 1, &m_Icon);
 		ImageLoader::deleteData(m_Icon.pixels);
+	}
+
+	void Window::init3d_func()
+	{
+		glfwInit();
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		m_Window = glfwCreateWindow(820, 600, "3D Sanbox", NULL, NULL);
+
+		if (m_Window == NULL)
+		{
+			std::cout << "Failed to create GLFW window" << std::endl;
+			glfwTerminate();
+		}
+
+		glfwMakeContextCurrent(m_Window);
+
+		GE_ASSERT(glewInit() != GLEW_OK, "glew could not be intiliazed"); // check glew
+
+		glViewport(0, 0, 820, 600);
+
+		glEnable(GL_DEPTH_TEST);
+		glfwSwapInterval(1);
 	}
 
 	void Window::clear() const { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }

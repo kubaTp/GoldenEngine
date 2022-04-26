@@ -43,5 +43,10 @@ namespace golden { namespace graphics {
 		Logger::logSpace();
 	}
 
+	void Scene::insertCamera(Camera* cam)
+	{
+		m_MainCamera = cam;
+	}
+
 	inline const std::string& Scene::getName() const { return this->m_Name; }
 }}

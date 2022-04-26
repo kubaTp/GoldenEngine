@@ -1,6 +1,5 @@
 #define PREDEFINED_MACROS
 #include "src/core.h"
-#include "src/graphics/scene.h"
 
 #define BATCH_RENDERER 1
 #define MAX_SPRITE_AMOUNT 0
@@ -9,12 +8,12 @@
 
 #define GE_EDITOR 0
 // projection matrix is maths::Mat4::orthographic(-16.0f, 16.0f, -9.0f, 9.0f, 1.0f, -1.0f)
-// TODO : start serialization
 
 #include "mycomponent.h" // example component file
 
 #pragma region SANDBOX
 #if 1
+
 int main()
 {
 	using namespace golden;
@@ -25,8 +24,8 @@ int main()
 	system("CLS");
 	srand(time(NULL));
 
-	rs::setResourcePath("D:/Code/Games Engine/GoldenEngineCopy/assets/");
-	rs::setProjectPath("D:/Code/Games Engine/GoldenEngineCopy/");
+	rs::setResourcePath("D:/Code/Games Engine/Reference/GoldenEngine-dev/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/Reference/GoldenEngine-dev/");
 
 	Scene mainscene("main_scene");
 
@@ -57,8 +56,10 @@ int main()
 
 	mainscene.removeLayer("adsad"); // validating
 
+	Camera mainCamera("Main Camera", maths::Vec3(0, 0, 0), maths::Vec3(0, 0, 0));
+	mainscene.insertCamera(&mainCamera);
+
 	Chief::insertScene(&mainscene);
-	//Chief::descLayers();
 
 	Texture textures[] =
 	{
@@ -104,16 +105,10 @@ int main()
 	if (transparentSprite->hasComponent<ecs::TransformComponent>())
 	{
 		lg::logInfo("has the component");
-		std::shared_ptr<ecs::TransformComponent> transform = transparentSprite->getComponent<ecs::TransformComponent>();
-
-		//std::stringstream ss;
-		//ss << "pos is " << transform->position;
-		//lg::logInfo(ss.str());		
+		std::shared_ptr<ecs::TransformComponent> transform = transparentSprite->getComponent<ecs::TransformComponent>();	
 	}
 	else
-	{
-		lg::logError("does not has the component");
-	}
+		lg::logError("transparent sprite does not has the component");
 
 	#pragma region ECS_DEBUGING
 #if 0
@@ -129,7 +124,7 @@ int main()
 
 	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
 	FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 29));
-	FontManager::add(new Font(FontType::SourceSerifPro, rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
+	FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
 
 	Label* fpsLabel  = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
 	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
@@ -140,10 +135,7 @@ int main()
 	double x, y;
 	Mat4 rotationMatrix = Mat4::idenity();
 
-	SoundManager::changeVolume(0.3f);
-	float deltaTime = 0.0f, volume = SoundManager::getVolume();
-	maths::Vec3 newPos;
-
+	float deltaTime = 0.0f;
 
 	#pragma region SERIALIZATION_TEST
 
@@ -153,15 +145,15 @@ int main()
 
 	#pragma endregion
 
-	SoundManager::muteAudio();
 
 	/*--- GAME LOOP ---*/
 	while (!window.closed())
 	{
-		static bool firstFrame = true;
-		deltaTime += 0.001f;
 		window.clear();
 
+		//deltaTime += 0.001f;
+
+		#pragma region GE_EDITOR_LAYER
 		#if GE_EDITOR
 				ImGui_ImplOpenGL3_NewFrame();
 				ImGui_ImplGlfw_NewFrame();
@@ -175,14 +167,7 @@ int main()
 				ImGui::Image((void*)Chief::framebuffer->getBuffer(), ImVec2{ 320 * 1.5f, 180.0f * 1.5f });
 				ImGui::End();
 		#endif
-
-		if (firstFrame) // start method
-		{	
-			SoundManager::changeVolume(0.6f);
-			SoundManager::play("menu");
-			firstFrame = false;
-		}
-
+#pragma endregion
 
 		//rotationMatrix = Mat4::rotation(40, Vec3(0, 0, 1));
 		//rotationMatrix = Mat4::translation(Vec3(4.0f, 0.0f, 0.0f));
@@ -190,9 +175,6 @@ int main()
 		//shader.enable();
 		//shader.setUniformMat4("ml_matrix", rotationMatrix);
 		//shader.disabled();
-
-
-		//SoundManager::changeVolume(volume);
 
 		#pragma region COLOR_CHANGING
 #if 0
@@ -206,14 +188,13 @@ int main()
 		#pragma endregion
 
 		usage::Input::getMousePosition(x, y);
-		//shader_lighting.enable();
-		//shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
-		//shader_lighting.disabled();
+		shader_lighting.enable();
+		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
+		shader_lighting.disabled();
 
-		newPos = maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
-		transparentSprite->getComponent<ecs::TransformComponent>()->position = newPos;
+		transparentSprite->getComponent<ecs::TransformComponent>()->position = 
+			maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 
-		//rotationMatrix = Mat4::rotation(window.getTime() * 10, Vec3(0, 0, 1));	
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
 		#pragma region INPUT_TESTING
@@ -233,28 +214,27 @@ int main()
 	#pragma endregion
 
 		Chief::drawScene();
-		//Chief::drawScene("layer");
 
+		#pragma region GE_EDITOR_RENDER
 #if GE_EDITOR
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
-		window.update();
+#pragma endregion
 
+		window.update();		
 	}
 
 	SoundManager::destroy();
 	return 0;
 }
+
 #endif
 #pragma endregion
+
 #pragma region 3D
 #if 0
 
-//------- Ignore this ----------
-#include <filesystem>
-namespace fs = std::filesystem;
-//------------------------------
 #include "src/core.h"
 
 #include <iostream>
@@ -286,37 +266,12 @@ GLuint indices[] =
 
 int main()
 {
-	rs::setResourcePath("D:/Code/Games Engine/GoldenEngineCopy/assets/");
-	rs::setProjectPath("D:/Code/Games Engine/GoldenEngineCopy/");
+	rs::setResourcePath("D:/Code/Games Engine/Reference/GoldenEngine-dev/assets/");
+	rs::setProjectPath("D:/Code/Games Engine/Reference/GoldenEngine-dev/");
 
-	glfwInit();
+	Window window("3d sandbox", 820, 600, true);
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(820, 600, "YoutubeOpenGL", NULL, NULL);
-
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	if (glewInit() != GLEW_OK)
-	{
-		std::cout << "glew could not be intiliazed" << endl;
-		return 0;
-	}
-
-	//golden::GE_ASSERT(glewInit() != GLEW_OK, "glew could not be intiliazed"); // check glew
-
-	glViewport(0, 0, 820, 600);
-
+	// todo : set up 3drenderable class
 	golden::graphics::Shader shaderProgram(rs::findFile("shaders/default.vert"), rs::findFile("shaders/default.frag"));
 
 	uint32_t vao, vbo, ibo;
@@ -332,7 +287,6 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
 
@@ -344,22 +298,16 @@ int main()
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	golden::graphics::Texture brickTex(rs::findFile("img/24Bit_img_chess_2.png"));
 
-
 	float rotation = 0.0f;
 	double prevTime = glfwGetTime();
-	
-	glEnable(GL_DEPTH_TEST);
-	glfwSwapInterval(1);
 
-	while (!glfwWindowShouldClose(window))
+	while (!window.closed())
 	{
-		
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		window.clear();
 
 		shaderProgram.enable();
 
@@ -369,34 +317,30 @@ int main()
 			rotation += 0.5f;
 			prevTime = crntTime;
 		}
-		
+
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 proj = glm::mat4(1.0f);
-		
+
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
 		proj = glm::perspective(glm::radians(45.0f), (float)820 / 600, 0.1f, 100.0f);
-		
+
 		shaderProgram.setUniformMat4("model", model);
 		shaderProgram.setUniformMat4("view", view);
 		shaderProgram.setUniformMat4("proj", proj);
-	
+
 		shaderProgram.setUniform1f("scale", 0.5f);
 
 		brickTex.bind();
 
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	
+
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		window.update();
 	}
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
 
 	return 0;
 }

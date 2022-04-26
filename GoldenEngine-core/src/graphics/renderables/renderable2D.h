@@ -4,18 +4,18 @@
 #include <algorithm>
 #include <memory>
 
-#include "buffers/buffer.h"
-#include "buffers/indexbuffer.h"
-#include "buffers/vertexarray.h"
+#include "../buffers/buffer.h"
+#include "../buffers/indexbuffer.h"
+#include "../buffers/vertexarray.h"
 
-#include "../maths/maths.h"
-#include "shader.h"
+#include "../../maths/maths.h"
+#include "../shader.h"
 
-#include "renderer2D.h"
+#include "../renderers/renderer2D.h"
 
-#include "texture.h"
+#include "../texture.h"
 
-#include "../components/components_pack.h"
+#include "../../components/components_pack.h"
 
 #include "renderables2d_idService.h"
 

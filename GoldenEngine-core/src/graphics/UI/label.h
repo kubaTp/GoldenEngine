@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderable2D.h"
+#include "../renderables/renderable2D.h"
 #include "fontmanager.h" // includes font.h
 
 namespace golden { namespace graphics {

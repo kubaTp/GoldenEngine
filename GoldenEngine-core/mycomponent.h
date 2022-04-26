@@ -10,12 +10,14 @@ class MyComponent : public golden::ecs::Component
 	void OnStart() override
 	{
 		lg::logInfo("ON START");
+
+		golden::sound::SoundManager::changeVolume(0.3f);
+		golden::sound::SoundManager::play("menu");
 	}
 
 	void OnUpdate() override
 	{		
-		if (usage::Input::isKeyPressed(GLFW_KEY_W))
-			lg::logInfo("is key pressed in mycomponent.h");
-
+		if (usage::Input::isKeyPressed(GLFW_KEY_1))
+			lg::logInfo("1 key is pressed in mycomponent.h");
 	}
 };
