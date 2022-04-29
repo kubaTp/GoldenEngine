@@ -8,9 +8,7 @@ namespace golden {  namespace usage {
 	bool Input::m_MouseButtonState[MAX_BUTTONS];
 	double Input::m_Mx, Input::m_My;
 
-	Timestep* Input::m_Timestep;
-
-	void Input::init(Timestep& timestep)
+	void Input::init()
 	{
 		for (short i = 0; i < MAX_KEYS; i++) // default key setting
 		{
@@ -23,8 +21,6 @@ namespace golden {  namespace usage {
 				//m_MouseButtonState[i] = false;
 			}
 		}
-
-		m_Timestep = &timestep;
 	}
 	void Input::update()
 	{
@@ -87,25 +83,29 @@ namespace golden {  namespace usage {
 		static float resultHorizontal = 0;
 		static float resultVertical = 0;
 
-		if (input == InputKind::Horizontal)
+		switch (input)
 		{
-			if (isKeyPressed(GLFW_KEY_A))
-				resultHorizontal -= 4 * m_Timestep->getSeconds();
+			case InputKind::Horizontal:
+				if (isKeyPressed(GLFW_KEY_A))
+					resultHorizontal -= 4 * Time::m_Timestep.getSeconds();
 
-			else if (isKeyPressed(GLFW_KEY_D))
-				resultHorizontal += 4 * m_Timestep->getSeconds();
+				else if (isKeyPressed(GLFW_KEY_D))
+					resultHorizontal += 4 * Time::m_Timestep.getSeconds();
 
-			return resultHorizontal;
-		}
-		else
-		{
-			if (isKeyPressed(GLFW_KEY_W))
-				resultVertical += 5 * m_Timestep->getSeconds();
+				return resultHorizontal;
 
-			else if (isKeyPressed(GLFW_KEY_S))
-				resultVertical -= 5 * m_Timestep->getSeconds();
+				break;
 
-			return resultVertical;
+			case InputKind::Vertical:
+				if (isKeyPressed(GLFW_KEY_W))
+					resultVertical += 5 * Time::m_Timestep.getSeconds();
+
+				else if (isKeyPressed(GLFW_KEY_S))
+					resultVertical -= 5 * Time::m_Timestep.getSeconds();
+
+				return resultVertical;
+
+				break;
 		}
 	}
 }}

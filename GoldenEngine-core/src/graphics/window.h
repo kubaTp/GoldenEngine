@@ -26,6 +26,7 @@ namespace golden { namespace graphics {
 	{
 	public:
 		uint16_t fps = 0;
+
 	public:
 		Window(const char* title, uint16_t width, uint16_t height, bool initIn3dMode = false);
 		~Window();
@@ -34,14 +35,10 @@ namespace golden { namespace graphics {
 		void update();		 // swap buffers and poll events
 		bool closed() const; // check if window should be closed
 
-		inline uint16_t getWidth() const { return m_Width; };
-		inline uint16_t getHeight() const { return m_Height; };
-		inline GLFWwindow* getWindow() const { return m_Window; }
-		inline GLFWimage getWindowIcon() const { return m_Icon; }
-
-		inline float getTime() const { return m_Time; }
-		inline float getTimestep() const { return m_Timestep.getSeconds(); }
-		inline float getTimestepMiliSecs() const { return m_Timestep.getMiliseconds(); }
+		inline uint16_t getWidth() const       { return m_Width;  }
+		inline uint16_t getHeight() const      { return m_Height; }
+		inline GLFWwindow* getWindow() const   { return m_Window; }
+		inline GLFWimage getWindowIcon() const { return m_Icon;   }
 		
 		inline void setWindowIcon(const std::string& imagePath);
 
@@ -59,9 +56,5 @@ namespace golden { namespace graphics {
 		uint16_t m_Width, m_Height;
 		GLFWwindow* m_Window;
 		GLFWimage m_Icon;
-
-		float m_Time;
-		float m_LastFrameTime = 0.0f;
-		Timestep m_Timestep = 0.0f;
 	};
 }}

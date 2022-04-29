@@ -21,6 +21,9 @@ int main()
 	using namespace maths;
 	using namespace sound;
 
+	Timer mainTimer;
+	mainTimer.start();
+
 	system("CLS");
 	srand(time(NULL));
 
@@ -150,8 +153,6 @@ int main()
 	while (!window.closed())
 	{
 		window.clear();
-
-		//deltaTime += 0.001f;
 
 		#pragma region GE_EDITOR_LAYER
 		#if GE_EDITOR

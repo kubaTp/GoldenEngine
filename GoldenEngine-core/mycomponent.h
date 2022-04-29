@@ -11,7 +11,7 @@ class MyComponent : public golden::ecs::Component
 	{
 		lg::logInfo("ON START");
 
-		golden::sound::SoundManager::changeVolume(0.3f);
+		golden::sound::SoundManager::changeVolume(0.1f);
 		golden::sound::SoundManager::play("menu");
 	}
 
