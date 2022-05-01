@@ -23,8 +23,8 @@ namespace golden { namespace graphics {
 
 	GLuint Shader::load()
 	{
-		GLuint program = glCreateProgram();
-		GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
+		GLuint program  = glCreateProgram();
+		GLuint vertex   = glCreateShader(GL_VERTEX_SHADER);
 		GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
 		std::string vertSourceString = FileManager::read_file(m_VertPath.c_str());

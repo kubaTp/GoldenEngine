@@ -147,13 +147,13 @@ namespace golden { namespace graphics {
 		using namespace ftgl;
 
 		bool found = false;
-		float textureSlot = 0.0f;
+		float ts = 0.0f;
 
 		for (int i = 0; i < m_TextureSlots.size(); i++)
-		{			
+		{
 			if (m_TextureSlots[i] == font.getFTGLAtlas()->id)
 			{
-				textureSlot = (float)(i + 1); // grab index to set-up sampler becasue sampler2d works just chronologic, for example tid 6 can be equal to sampler 2 or 3... ||
+				ts = (float)(i + 1); // grab index to set-up sampler becasue sampler2d works just chronologic, for example tid 6 can be equal to sampler 2 or 3... ||
 				found = true;
 				break;
 			}
@@ -169,66 +169,70 @@ namespace golden { namespace graphics {
 			}
 
 			m_TextureSlots.push_back(font.getFTGLAtlas()->id); // if not push back this tid
-			textureSlot = (float)(m_TextureSlots.size()); // set textureSlot to the last one in m_TextureSlots
+			ts = (float)(m_TextureSlots.size()); // set textureSlot to the last one in m_TextureSlots
 		}
-		
-		float scalex = 2000.0f / 32.0f;
-		float scaley = 1200.0f / 16.0f;
+
+		maths::Vec2 scale = maths::Vec2(2000.0f / 32.0f, 
+									    1200.0f / 16.0f);
 
 		float x = position.x;
 
 		texture_font_t* ftFont = font.getFTGLFont();
 
-		for (int i = 0; i < text.length(); i++)
+		for (uint16_t i = 0; i < text.length(); i++)
 		{
-			char c = text[i];
-			texture_glyph_t* glyph = texture_font_get_glyph(ftFont, c);
+			texture_glyph_t* glyph = texture_font_get_glyph(ftFont, text[i]);
 
-			if (glyph != NULL)
+			if (text[i] == 'P')
+			{
+				//std::cout << glyph->offset_x / scale.x << std::endl;
+			}
+
+			if (glyph)
 			{
 				if (i > 0)
 				{
 					float kerning = texture_glyph_get_kerning(glyph, text[i - 1]);
-					x += kerning / scalex;
+					x += kerning / scale.x;
 				}
 
-				float x0 = x + glyph->offset_x			/ scalex;
-				float y0 = position.y + glyph->offset_y / scaley;
-				float x1 = x0 + glyph->width			/ scalex;
-				float y1 = y0 - glyph->height			/ scaley; // projection matrix has positive top so needs to be substract
-
+				float x0 = x + glyph->offset_x / scale.x;
+				float y0 = position.y + glyph->offset_y / scale.y;
+				float x1 = x0 + glyph->width / scale.x;
+				float y1 = y0 - glyph->height / scale.y; // projection matrix has positive top so needs to be substract
+				
 				float u0 = glyph->s0;
 				float v0 = glyph->t0;
 				float u1 = glyph->s1;
 				float v1 = glyph->t1;
 
-				m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(x0, y0, 0);
+				m_Buffer->vertex = maths::Vec3(x0, y0, 0);
 				m_Buffer->uv = maths::Vec2(u0, v0);
-				m_Buffer->tid = textureSlot;
+				m_Buffer->tid = ts;
 				m_Buffer->color = color;
 				m_Buffer++; // advance buffer to the next VertexData
 
-				m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(x0, y1, 0);
+				m_Buffer->vertex = maths::Vec3(x0, y1, 0);
 				m_Buffer->uv = maths::Vec2(u0, v1);
-				m_Buffer->tid = textureSlot;
+				m_Buffer->tid = ts;
 				m_Buffer->color = color;
 				m_Buffer++; // advance buffer to the next VertexData
 
-				m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(x1, y1, 0);
+				m_Buffer->vertex = maths::Vec3(x1, y1, 0);
 				m_Buffer->uv = maths::Vec2(u1, v1);
-				m_Buffer->tid = textureSlot;
+				m_Buffer->tid = ts;
 				m_Buffer->color = color;
 				m_Buffer++; // advance buffer to the next VertexData
 
-				m_Buffer->vertex = *m_TransformationStackBack * maths::Vec3(x1, y0, 0);
+				m_Buffer->vertex = maths::Vec3(x1, y0, 0);
 				m_Buffer->uv = maths::Vec2(u1, v0);
-				m_Buffer->tid = textureSlot;
+				m_Buffer->tid = ts;
 				m_Buffer->color = color;
 				m_Buffer++; // advance buffer to the next VertexData
 
 				m_IndexCount += 6;
 
-				x += glyph->advance_x / scalex;
+				x += glyph->advance_x / scale.x;
 			}
 		}
 	}

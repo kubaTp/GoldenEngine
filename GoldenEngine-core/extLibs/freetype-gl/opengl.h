@@ -31,7 +31,6 @@
  * policies, either expressed or implied, of Nicolas P. Rougier.
  * ============================================================================
  */
-#ifndef SPARKY_PLATFORM_WEB
 
 #ifndef __OPEN_GL_H__
 #define __OPEN_GL_H__
@@ -42,7 +41,7 @@
 #  else
 #    include <OpenGL/gl.h>
 #  endif
-#elif defined(SP_PLATFORM_WINDOWS) || defined(_WIN64)
+#elif defined(_WIN64)
 #include <GL/glew.h>
 #else
 #  include <GL/glew.h>
@@ -50,5 +49,3 @@
 #endif
 
 #endif /* OPEN_GL_H */
-
-#endif
