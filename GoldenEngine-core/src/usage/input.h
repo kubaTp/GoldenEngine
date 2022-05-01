@@ -1,9 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "../utils/timestep.h"
-
-#include <iostream>
+#include "../usage/time.h"
 
 #define MAX_KEYS 1024
 #define MAX_BUTTONS 32
@@ -51,7 +49,7 @@ namespace golden {
 				Input::m_My = ypos;
 			}
 
-			static void init(Timestep& timestep);
+			static void init();
 			static void update();
 
 		private:
@@ -60,8 +58,6 @@ namespace golden {
 			static bool m_MouseButtons[MAX_BUTTONS];
 			static bool m_MouseButtonState[MAX_BUTTONS];
 			static double m_Mx, m_My;
-
-			static Timestep* m_Timestep;
 		};
 	}
 }

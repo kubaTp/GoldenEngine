@@ -67,11 +67,12 @@ namespace golden {
 	void Chief::render_layer(graphics::Layer* layer)
 	{
 		//framebuffer->Bind();
-		
+
 		layer->shaderBinding(true);
 		m_Renderer2D->begin();
 		
-		//layer->m_Shader.setUniformMat4("vw_matrix", m_ActiveScene->m_MainCamera->cameraMatrix()); // apply camera matrix | todo : check if matrix need to be updated
+		if(!layer->isUILayer())
+			layer->m_Shader.setUniformMat4("vw_matrix", m_ActiveScene->m_MainCamera->cameraMatrix()); // apply camera matrix | todo : check if matrix need to be updated
 
 		for (graphics::Renderable2D* renderable : layer->getRenderables())
 		{		
@@ -104,6 +105,7 @@ namespace golden {
 		m_Renderer2D->end();	
 		m_Renderer2D->flush();
 		layer->shaderBinding(false);
+
 		m_Renderer2D->reset(); // reset all data from one layer
 
 		//framebuffer->Unbind();		

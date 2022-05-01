@@ -2,7 +2,7 @@
 
 namespace golden { namespace graphics {
 
-	Layer::Layer(Shader& shader, maths::Mat4 projectionMatrix) :  m_Shader(shader), m_ProjectionMatrix(projectionMatrix)
+	Layer::Layer(Shader& shader, maths::Mat4 projectionMatrix, bool uiLayer) :  m_Shader(shader), m_ProjectionMatrix(projectionMatrix), m_UILayer(uiLayer)
 	{
 		//set specified matrix to projection matrix in specified shader
 		m_Shader.enable();

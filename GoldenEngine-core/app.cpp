@@ -1,4 +1,4 @@
-#define PREDEFINED_MACROS
+﻿#define PREDEFINED_MACROS
 #include "src/core.h"
 
 #define BATCH_RENDERER 1
@@ -20,6 +20,9 @@ int main()
 	using namespace graphics;
 	using namespace maths;
 	using namespace sound;
+
+	Timer mainTimer;
+	mainTimer.start();
 
 	system("CLS");
 	srand(time(NULL));
@@ -46,7 +49,7 @@ int main()
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
-	TileLayer uiLayer(font_shader);
+	TileLayer uiLayer(font_shader, true);
 	TileLayer layer(shader);
 	TileLayer background_layer(shader_lighting);
 
@@ -122,12 +125,12 @@ int main()
 #endif
 #pragma endregion
 
-	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
-	FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 29));
-	FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 21));
+	//FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
+	//FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 50));
+	FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 50));
 
-	Label* fpsLabel  = new Label("fps: 0", -15.5f, 8.0f, FontType::Inter_Regular, 0xffffffff);
-	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::Inter_Regular, 0xffffffff);
+	Label* fpsLabel  = new Label("fps: 0", -15.5f, 8.0f, FontType::SourceSerifPro, 0xffffffff);
+	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::SourceSerifPro, 0xffffffff);
 
 	uiLayer.add(fpsLabel);
 	uiLayer.add(nameLabel);
@@ -150,8 +153,6 @@ int main()
 	while (!window.closed())
 	{
 		window.clear();
-
-		//deltaTime += 0.001f;
 
 		#pragma region GE_EDITOR_LAYER
 		#if GE_EDITOR
@@ -192,8 +193,10 @@ int main()
 		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
 		shader_lighting.disabled();
 
-		transparentSprite->getComponent<ecs::TransformComponent>()->position = 
-			maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
+		//transparentSprite->getComponent<ecs::TransformComponent>()->position = 
+			//maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
+
+		mainCamera.position = maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		

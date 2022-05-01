@@ -34,7 +34,7 @@ namespace golden {
 }
 
 #else
-/*--- static class which is addtional added to measuere time by user ---*/
+/*--- main timer ---*/
 
 #include <chrono>
 #include <ctime>
@@ -44,6 +44,10 @@ class Timer
 {
 public:
     Timer() { }
+    ~Timer()
+    {
+        this->stop();
+    }
 
 public:
     void start()
@@ -58,7 +62,7 @@ public:
         m_Running = false;
     }
 
-    double elapsedMilliseconds()
+    float elapsedMilliseconds()
     {
         std::chrono::time_point<std::chrono::system_clock> endTime;
 
@@ -70,7 +74,7 @@ public:
         return std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_StartTime).count();
     }
 
-    double elapsedSeconds() { return elapsedMilliseconds() / 1000.0; }
+    float elapsedSeconds() { return elapsedMilliseconds() / 1000.0; }
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_StartTime;

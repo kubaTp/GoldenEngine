@@ -12,7 +12,8 @@ namespace golden { namespace graphics {
 		else
 			init3d_func();
 
-		usage::Input::init(m_Timestep);
+		usage::Time::init();
+		usage::Input::init();
 	}
 
 	Window::~Window() { glfwTerminate(); }
@@ -23,7 +24,6 @@ namespace golden { namespace graphics {
 
 		GE_ASSERT(!glfwInit(), "failed to initialized glfw"); // failed to init glfw
 
-		m_Time = glfwGetTime();
 		m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL); // create new window
 
 		GE_ASSERT(!m_Window, "failed to create window"); // failed to create glfw window
@@ -98,17 +98,14 @@ namespace golden { namespace graphics {
 		GLenum error = glGetError();
 		GE_ASSERT_OPENGL_WARNING(error != GL_NO_ERROR, "OpenGL Error : ", error);
 
-		usage::Input::update();
-
-		m_Time = (float)glfwGetTime(); // update current time
-		m_Timestep = m_Time - m_LastFrameTime;
-		m_LastFrameTime = m_Time;
+		usage::Time::update(); // set current time in 'Time' static class
+		usage::Input::update(); // update states of keys and buttons
 
 		static uint32_t deltaTime = 0;
 		static uint16_t frameCounter = 0;
 		frameCounter++;
 
-		if (m_Time - deltaTime >= 1) // check if delta time is greater than 1
+		if (usage::Time::getTime() - deltaTime >= 1) // check if delta time is greater than 1
 		{
 			fps = frameCounter; // set public fps variable value to frameCounter var value
 			frameCounter = 0;

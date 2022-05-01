@@ -197,6 +197,7 @@
     <ClInclude Include="src\usage\chief.h" />
     <ClInclude Include="src\usage\input.h" />
     <ClInclude Include="src\usage\project.h" />
+    <ClInclude Include="src\usage\time.h" />
     <ClInclude Include="src\utils\assert.h" />
     <ClInclude Include="src\utils\fileutils.h" />
     <ClInclude Include="src\utils\imageloader.h" />
@@ -319,6 +320,7 @@
     <ClCompile Include="src\usage\chief.cpp" />
     <ClCompile Include="src\usage\input.cpp" />
     <ClCompile Include="src\usage\project.cpp" />
+    <ClCompile Include="src\usage\time.cpp" />
     <ClCompile Include="src\utils\logger.cpp" />
     <ClCompile Include="src\utils\resourceloader.cpp" />
   </ItemGroup>

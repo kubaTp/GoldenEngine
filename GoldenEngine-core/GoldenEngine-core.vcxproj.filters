@@ -479,6 +479,7 @@
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\camera.h" />
+    <ClInclude Include="src\usage\time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
@@ -816,5 +817,6 @@
       <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\camera.cpp" />
+    <ClCompile Include="src\usage\time.cpp" />
   </ItemGroup>
 </Project>
