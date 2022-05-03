@@ -18,7 +18,7 @@
 #define MAX_KEYS 1024
 #define MAX_BUTTONS 32
 
-namespace golden { namespace graphics {
+namespace golden { class Chief; namespace graphics {
 
 	enum struct Input { Horizontal, Vertical };
 
@@ -31,9 +31,9 @@ namespace golden { namespace graphics {
 		Window(const char* title, uint16_t width, uint16_t height, bool initIn3dMode = false);
 		~Window();
 
-		void clear() const;
+		void clear() const;  // reset / clear buffers
 		void update();		 // swap buffers and poll events
-		bool closed() const; // check if window should be closed
+		//bool closed() const; // check if window should be closed
 
 		inline uint16_t getWidth() const       { return m_Width;  }
 		inline uint16_t getHeight() const      { return m_Height; }
@@ -43,13 +43,16 @@ namespace golden { namespace graphics {
 		inline void setWindowIcon(const std::string& imagePath);
 
 		friend class usage::Input;
-
+		friend class Chief;
+		
 	private:
 		void init();
 		void Window::init3d_func();
 
 		friend static void window_resize(GLFWwindow* window, int width, int height);
 		friend static void error_callback(int error, const char* description);
+
+		void (*ChiefResizeCallbackFunc)();
 
 	private:
 		const char* m_Title;

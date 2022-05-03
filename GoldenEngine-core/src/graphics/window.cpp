@@ -116,7 +116,7 @@ namespace golden { namespace graphics {
 		glfwSwapBuffers(m_Window);
 	}
 
-	bool Window::closed() const { return glfwWindowShouldClose(m_Window) == 1; }
+	//bool Window::closed() const { return glfwWindowShouldClose(m_Window) == 1; }
 
 	void Window::setWindowIcon(const std::string& imagePath)
 	{
@@ -133,6 +133,9 @@ namespace golden { namespace graphics {
 		Window* win = (Window*)glfwGetWindowUserPointer(window);
 		win->m_Width = width;
 		win->m_Height = height;
+
+		// call Golden Engine resize callback
+		win->ChiefResizeCallbackFunc();
 	}
 
 	void error_callback(int error, const char* description)

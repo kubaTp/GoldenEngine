@@ -39,6 +39,6 @@ namespace golden {  namespace graphics {
 
 	void Label::submit(Renderer2D* renderer) const
 	{
-		renderer->drawString(content, getComponent<ecs::TransformComponent>()->position, *m_Font, m_Color);
+		renderer->submitString(content, getComponent<ecs::TransformComponent>()->position, *m_Font, m_Color);
 	}
 }}

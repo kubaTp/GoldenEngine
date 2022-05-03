@@ -142,7 +142,7 @@ namespace golden { namespace graphics {
 		m_IndexCount += 6;
 	}
 
-	void BatchRenderer2D::drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color)
+	void BatchRenderer2D::submitString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color)
 	{
 		using namespace ftgl;
 

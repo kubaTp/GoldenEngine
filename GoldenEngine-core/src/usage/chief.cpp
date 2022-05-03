@@ -4,23 +4,27 @@ golden::graphics::Renderer2D* golden::Chief::m_Renderer2D;
 
 golden::graphics::Scene* golden::Chief::m_ActiveScene;
 bool golden::Chief::m_Inited = false;
-
-golden::graphics::Framebuffer* golden::Chief::framebuffer;
-golden::graphics::FramebufferSpecification golden::Chief::spec;
+//golden::graphics::Framebuffer* golden::Chief::framebuffer;
+//golden::graphics::FramebufferSpecification golden::Chief::spec;
 bool golden::Chief::m_FirstFrame;
+golden::graphics::Window* golden::Chief::m_CurrentWindow;
 
 namespace golden {
 
-	void Chief::init(graphics::Renderer2D* renderer) 
+	void Chief::init(graphics::Renderer2D* renderer, graphics::Window* window)
 	{ 
-		m_Inited = true; 
 		m_Renderer2D = renderer;
+		m_CurrentWindow = window;
+
+		m_CurrentWindow->ChiefResizeCallbackFunc = &resizeCallback; // set custom resize callback
+
+		m_Inited = true;
 
 		//framebuffer spec
-		spec.Width = 960.0f;
-		spec.Height = 540.0f;
+		//spec.Width = 960.0f;
+		//spec.Height = 540.0f;
 
-		framebuffer = new graphics::Framebuffer(spec);
+		//framebuffer = new graphics::Framebuffer(spec);
 
 		m_FirstFrame = true;
 	}
@@ -62,6 +66,32 @@ namespace golden {
 		}
 
 		m_FirstFrame = false;
+	}
+
+	void Chief::check()
+	{
+		GE_ASSERT(!m_Inited, "Could not start the game because Chief was not inited!");
+	}
+
+	void Chief::clear()
+	{
+		// window clear
+		m_CurrentWindow->clear();
+
+		// chief clear
+	}
+
+	void Chief::update()
+	{
+		// window update
+		m_CurrentWindow->update();
+
+		// chief update
+	}
+
+	bool Chief::appRunning()
+	{
+		return glfwWindowShouldClose(m_CurrentWindow->m_Window) == 0;
 	}
 
 	void Chief::render_layer(graphics::Layer* layer)
@@ -109,5 +139,21 @@ namespace golden {
 		m_Renderer2D->reset(); // reset all data from one layer
 
 		//framebuffer->Unbind();		
+	}
+
+	void Chief::resizeCallback() // private function that changes projection matrix to be relative to the screen
+	{
+#if 1
+		// event on resize
+		float prMatrixX = maths::precisionRoundedFloat(m_CurrentWindow->getWidth()  / 30.0f); // -> 40.0f
+		float prMatrixY = maths::precisionRoundedFloat(m_CurrentWindow->getHeight() / 34.0f); // -> 22.0f
+
+		maths::Mat4 calculatedPrMatrix = maths::Mat4::orthographic(-prMatrixX / 2, prMatrixX / 2, -prMatrixY / 2, prMatrixY / 2, 1, -1);
+
+		for (const auto& layer : m_ActiveScene->getLayers())
+			layer.second->changePrMatrix(calculatedPrMatrix);
+
+#endif
+		std::cout << "Chief resize callback" << std::endl;
 	}
 }

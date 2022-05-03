@@ -29,7 +29,7 @@ namespace golden { namespace graphics {
 
 		void begin() override; // bind buffers
 		void submit(const Renderable2D* renderable) override; // submit data to buffer
-		void drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) override;
+		void submitString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) override;
 		void flush() override; // draw elements
 		void end() override; // unbind buffers
 

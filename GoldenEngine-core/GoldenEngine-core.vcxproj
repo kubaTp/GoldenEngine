@@ -82,6 +82,10 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <IntelJCCErratum>true</IntelJCCErratum>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

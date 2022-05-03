@@ -40,7 +40,13 @@ int main()
 	Window window("Golden Engine", 1200.0f, 730.0f);
 	window.clear();
 
-	Chief::init(new BatchRenderer2D());
+	// event on resize
+	float prMatrixX = maths::precisionRoundedFloat(window.getWidth() / 30.0f); // -> 40.0f
+	float prMatrixY = maths::precisionRoundedFloat(window.getHeight() / 34.0f); // -> 22.0f
+
+	maths::Mat4 calculatedPrMatrix = maths::Mat4::orthographic(-prMatrixX / 2, prMatrixX / 2, -prMatrixY / 2, prMatrixY / 2, 1, -1);
+	
+	Chief::init(new BatchRenderer2D(), &window);
 
 	Shader shader_lighting(rs::findFile("shaders/basic.vert"), rs::findFile("shaders/basic.frag"));
 	Shader shader(rs::findFile("shaders/basic.vert"),		   rs::findFile("shaders/font.frag"));
@@ -49,9 +55,9 @@ int main()
 	shader_lighting.enable();
 	shader_lighting.setUniform2f("light_pos", Vec2(0, 0));
 
-	TileLayer uiLayer(font_shader, true);
-	TileLayer layer(shader);
-	TileLayer background_layer(shader_lighting);
+	TileLayer uiLayer(font_shader, calculatedPrMatrix, true);
+	TileLayer layer(shader, calculatedPrMatrix);
+	TileLayer background_layer(shader_lighting, calculatedPrMatrix);
 
 	mainscene.addLayer("bg_layer", &background_layer);
 	mainscene.addLayer("layer",    &layer);	
@@ -96,7 +102,7 @@ int main()
 #endif
 	#pragma endregion
 
-	Sprite* sky_bg = new Sprite("background",  - 16.0f, -9.0f, 32, 20, &textures[3]);
+	Sprite* sky_bg = new Sprite("background",  -22.0f, -11.0f, 44, 22, &textures[3]);
 	background_layer.add(sky_bg);
 
 	Sprite* transparentSprite = new Sprite("player", - 3, -3, 3, 3, &textures[2]);
@@ -125,12 +131,13 @@ int main()
 #endif
 #pragma endregion
 
-	//FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 50));
-	//FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 50));
-	FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 50));
+	FontManager::add(new Font(FontType::Inter_Regular, rs::findFile("fonts/Inter-Regular.ttf"), 60));
 
-	Label* fpsLabel  = new Label("fps: 0", -15.5f, 8.0f, FontType::SourceSerifPro, 0xffffffff);
-	Label* nameLabel = new Label("Project: Sandbox", 8.0f, 8.0f, FontType::SourceSerifPro, 0xffffffff);
+	//FontManager::add(new Font(FontType::Jura, rs::findFile("fonts/Jura.ttf"), 50));
+	//FontManager::add(new Font(FontType::SourceSerifPro , rs::findFile("fonts/SourceSerifPro-Regular.ttf"), 50));
+
+	Label* fpsLabel  = new Label("fps: 0", -20.0f, 10.0f, FontType::Inter_Regular, 0xffffffff);
+	Label* nameLabel = new Label("Project: Sandbox", -15.0f, 10.0f, FontType::Inter_Regular, 0xffffffff);
 
 	uiLayer.add(fpsLabel);
 	uiLayer.add(nameLabel);
@@ -148,11 +155,14 @@ int main()
 
 	#pragma endregion
 
+	SoundManager::muteAudio();
+
+	Chief::check();
 
 	/*--- GAME LOOP ---*/
-	while (!window.closed())
+	while (Chief::appRunning())
 	{
-		window.clear();
+		Chief::clear();
 
 		#pragma region GE_EDITOR_LAYER
 		#if GE_EDITOR
@@ -193,10 +203,10 @@ int main()
 		shader_lighting.setUniform2f("light_pos", Vec2((float)(x * 32.0f / window.getWidth() - 16.0f), (float)(9.0f - y * 18.0f / window.getHeight())));
 		shader_lighting.disabled();
 
-		//transparentSprite->getComponent<ecs::TransformComponent>()->position = 
-			//maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
+		transparentSprite->getComponent<ecs::TransformComponent>()->position = 
+			maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 
-		mainCamera.position = maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
+		//mainCamera.position = maths::Vec3(usage::Input::getKeyboardInput(usage::InputKind::Horizontal), usage::Input::getKeyboardInput(usage::InputKind::Vertical), 0);
 
 		fpsLabel->content = ("fps: " + std::to_string(window.fps));
 		
@@ -225,7 +235,7 @@ int main()
 #endif
 #pragma endregion
 
-		window.update();		
+		Chief::update();
 	}
 
 	SoundManager::destroy();

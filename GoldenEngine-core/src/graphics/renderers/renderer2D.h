@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <vector>
+
 #include "../UI/font.h"
 #include "../../maths/maths.h"
 
@@ -13,7 +14,7 @@ namespace golden { namespace graphics {
 	{
 	protected:
 		std::vector<maths::Mat4> m_TransformationStack; // vector of mat4, group can add special mat4 to change position of everyone sprite in the group
-		const maths::Mat4* m_TransformationStackBack; // represents the last on mat4 in the m_TransformationStack
+		const maths::Mat4* m_TransformationStackBack;  // represents the last on mat4 in the m_TransformationStack
 
 	protected:
 		Renderer2D()
@@ -21,7 +22,7 @@ namespace golden { namespace graphics {
 			m_TransformationStack.push_back(maths::Mat4::idenity());  // push neutral mat4 to the end
 			m_TransformationStackBack = &m_TransformationStack.back(); // assign the last of mat4 to the m_TransformationStackBack
 		}
-		 
+
 	public:
 		void push(const maths::Mat4& matrix, bool override = false)
 		{
@@ -37,20 +38,18 @@ namespace golden { namespace graphics {
 			m_TransformationStackBack = &m_TransformationStack.back();
 		}
 
-		void pop()
+		void pop() 
 		{
 			//ADD TO LOG SYSTEM : STATE OF TRANSFORMATION STACK
-			if(m_TransformationStack.size() > 1) // if the size is greater than 1
+			if (m_TransformationStack.size() > 1) // if the size is greater than 1
 				m_TransformationStack.pop_back(); // deletes the last one of mat4 in m_TransformationStackBack
-
-			m_TransformationStackBack = &m_TransformationStack.back(); // assign the last of mat4 to the m_TransformationStackBack
 		}
 
-		virtual void begin() {} // asssign all buffers
+		virtual void begin() { } // asssign all buffers
 		virtual void submit(const Renderable2D* renderable) = 0; // submit sprite to the renderer
-		virtual void drawString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) {}
+		virtual void submitString(const std::string& text, const maths::Vec3& position, const Font& font, const uint32_t color) { }
 		virtual void flush() = 0; // drawcall
-		virtual void reset() {} // abstact for renderer to reset data for next draw call for each layer
-		virtual void end() {} // unbind all buffers
+		virtual void reset() { } // abstact for renderer to reset data for next draw call for each layer
+		virtual void end() { } // unbind all buffers
 	};
 }}

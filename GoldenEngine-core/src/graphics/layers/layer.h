@@ -11,7 +11,7 @@ namespace golden { class Chief;  namespace graphics {
 	{
 	public:
 		friend class Chief;
-		Layer(Shader& shader, maths::Mat4 projectionMatrix, bool uiLayer = false);
+		Layer(Shader& shader, maths::Mat4& projectionMatrix, bool uiLayer = false);
 
 	public:
 		virtual ~Layer();
